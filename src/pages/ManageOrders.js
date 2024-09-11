@@ -1,32 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
-import api from '../services/api';
+import React, { useState, useEffect } from "react";
+import {
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
+import api from "../services/api";
+import { apiEndpoints } from "../services/apiEndpoints";
+import { useAuth } from "../contexts/AuthContext";
 
 const ManageOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { vendorId } = useAuth();
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [vendorId]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await api.get(getOrdersDate());
+      const response = await api.get(apiEndpoints.getOrdersDate(vendorId));
       setOrders(response.data);
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch orders. Please try again later.');
+      setError("Failed to fetch orders. Please try again later.");
       setLoading(false);
     }
   };
-
-  // const orders = [
-  //   { id: '#1286890452', name: 'Rajesh Kumar Singh', contact: '+91 9845678920', amount: '₹540.0', status: 'PLACED' },
-  //   // Add more dummy orders here
-  // ];
 
   if (loading) {
     return <CircularProgress />;
@@ -56,7 +64,7 @@ const ManageOrders = () => {
             {orders.map((order) => (
               <TableRow
                 key={order.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
                   {order.id}
