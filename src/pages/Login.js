@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Typography, Container, Box } from '@mui/material';
-import styled from 'styled-components';
-import { useAuth } from '../contexts/AuthContext';
-import api from '../services/api';
-import { apiEndpoints } from '../services/apiEndpoints';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Box,
+  CircularProgress,
+} from "@mui/material";
+import styled from "styled-components";
+import { useAuth } from "../contexts/AuthContext";
+import api from "../services/api";
+import { apiEndpoints } from "../services/apiEndpoints";
 
 const StyledContainer = styled(Container)`
   display: flex;
@@ -15,20 +22,30 @@ const StyledContainer = styled(Container)`
 `;
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const response = await api.post(apiEndpoints.getToken, { username, password });
-      login(response.data.token);
-      navigate('/');
+      const response = await api.post(apiEndpoints.getToken, {
+        username,
+        password,
+      });
+      api.defaults.headers.common[
+        "Authorization"
+      ] = `Token ${response.data.token}`;
+      await login(response.data.token);
+      navigate("/");
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
+      setError("Invalid credentials. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -68,8 +85,9 @@ const Login = () => {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          disabled={loading}
         >
-          Sign In
+          {loading ? <CircularProgress size={24} /> : "Sign In"}
         </Button>
       </Box>
     </StyledContainer>
