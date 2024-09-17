@@ -59,7 +59,7 @@ const Sidebar = () => {
             to={item.path}
           >
             <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
+            <ListItemText sx={{ color: "white" }} primary={item.text} />
           </StyledListItem>
         ))}
       </List>

@@ -2,20 +2,27 @@ import React from "react";
 import {
   AppBar,
   Toolbar,
-  Typography,
   IconButton,
   Menu,
   MenuItem,
+  Box,
 } from "@mui/material";
 import { AccountCircle } from "@mui/icons-material";
 import { useAuth } from "../contexts/AuthContext";
 import styled from "styled-components";
 import { useTheme } from "@mui/material/styles";
+import logo from "../images/logo.png";
 
 const StyledAppBar = styled(AppBar)`
-  background-color: ${(props) => props.theme.palette.primary.main};
+  background-color: #1e1e1e;
   z-index: ${(props) =>
     props.theme.zIndex.drawer + 1}; // Ensure AppBar is above Sidebar
+`;
+
+const LogoImage = styled.img`
+  padding-top: 10px;
+  height: 40px; // Adjust this value to fit your header height
+  width: auto;
 `;
 
 const Header = () => {
@@ -34,9 +41,9 @@ const Header = () => {
   return (
     <StyledAppBar position="fixed" theme={theme}>
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          SpicyWagon
-        </Typography>
+        <Box sx={{ flexGrow: 1 }}>
+          <LogoImage src={logo} alt="SpicyWagon Logo" />
+        </Box>
         <div>
           <IconButton
             size="large"
