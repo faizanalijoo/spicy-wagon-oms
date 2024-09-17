@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import api from "../services/api";
 import { apiEndpoints } from "../services/apiEndpoints";
 
@@ -10,6 +10,17 @@ export const AuthProvider = ({ children }) => {
   const [vendorId, setVendorId] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const fetchUserRole = useCallback(async (token) => {
+    try {
+      const response = await api.get(apiEndpoints.getRoles);
+      // setUserRole(response.data.role);
+      setVendorId(response.data[0].vendors[0]?.outlet?.outlet_id);
+      setLoading(false);
+    } catch (error) {
+      logout();
+    }
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -19,19 +30,8 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
       setIsAuthenticated(false);
     }
-  }, [localStorage]);
-
-  const fetchUserRole = async (token) => {
-    try {
-      const response = await api.get(apiEndpoints.getRoles);
-      // setUserRole(response.data.role);
-      // setVendorId(response.data.vendorId);
-      setLoading(false);
-    } catch (error) {
-      logout();
-    }
-  };
-
+  }, [fetchUserRole]);
+ 
   const login = async (token) => {
     localStorage.setItem("token", token);
     setIsAuthenticated(true);
