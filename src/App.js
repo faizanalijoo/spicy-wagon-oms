@@ -12,10 +12,11 @@ import OutletDetails from "./pages/OutletDetails";
 import ManageMenu from "./pages/ManageMenu";
 import RDSPage from "./pages/RDSPage";
 import Settings from "./pages/Settings";
+import OrderDetails from "./pages/OrderDetails";
 import { useAuth } from "./contexts/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, userRole, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return <CircularProgress />;
@@ -59,6 +60,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ManageOrders />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/order/:id"
+              element={
+                <ProtectedRoute>
+                  <OrderDetails />
                 </ProtectedRoute>
               }
             />

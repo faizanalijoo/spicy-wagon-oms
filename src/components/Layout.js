@@ -7,6 +7,7 @@ import Sidebar from "./Sidebar";
 
 const LayoutContainer = styled(Box)`
   display: flex;
+  width: 100%;
 `;
 
 const MainContent = styled(Box)`

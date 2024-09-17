@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Typography,
   Table,
@@ -10,31 +10,58 @@ import {
   Paper,
   CircularProgress,
 } from "@mui/material";
+import * as moment from "moment";
+import styled from "styled-components";
 import api from "../services/api";
 import { apiEndpoints } from "../services/apiEndpoints";
 import { useAuth } from "../contexts/AuthContext";
+import OrderTableRow from "../components/OrderTableRow";
+import { useNavigate } from "react-router-dom";
+
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  width: "100%",
+  overflowX: "auto",
+}));
+
+const StyledTable = styled(Table)(({ theme }) => ({
+  minWidth: "100%",
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  fontWeight: "bold",
+  backgroundColor: theme.palette?.background?.default || "#ffffff",
+  "&:not(:last-child)": {
+    borderRight: `1px solid ${theme.palette?.divider || "#e0e0e0"}`,
+  },
+}));
 
 const ManageOrders = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { vendorId } = useAuth();
 
-  useEffect(() => {
-    fetchOrders();
-  }, [vendorId]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get(apiEndpoints.getOrdersDate(vendorId));
-      setOrders(response.data);
+      const response = await api.get(
+        apiEndpoints.getOrdersDate(
+          vendorId,
+          moment(new Date()).format("YYYY-MM-DD")
+        )
+      );
+      setOrders(response.data.results);
       setLoading(false);
     } catch (err) {
       setError("Failed to fetch orders. Please try again later.");
       setLoading(false);
     }
-  };
+  }, [vendorId]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   if (loading) {
     return <CircularProgress />;
@@ -44,40 +71,35 @@ const ManageOrders = () => {
     return <Typography color="error">{error}</Typography>;
   }
 
+  const handleNext = (orderId) => {
+    navigate(`/order/${orderId}`);
+    // Implement your logic here
+  };
+
   return (
     <div>
       <Typography variant="h4" component="h1" gutterBottom>
         Manage Orders
       </Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <StyledTableContainer component={Paper}>
+        <StyledTable sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Order ID</TableCell>
-              <TableCell>Customer Name</TableCell>
-              <TableCell>Contact</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>Status</TableCell>
+              <StyledTableCell>Order Details</StyledTableCell>
+              <StyledTableCell>Customer Details</StyledTableCell>
+              <StyledTableCell>Travel Info</StyledTableCell>
+              <StyledTableCell>Booking Info</StyledTableCell>
+              <StyledTableCell>Status & Updates</StyledTableCell>
+              <StyledTableCell>Next</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.map((order) => (
-              <TableRow
-                key={order.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {order.id}
-                </TableCell>
-                <TableCell>{order.name}</TableCell>
-                <TableCell>{order.contact}</TableCell>
-                <TableCell>{order.amount}</TableCell>
-                <TableCell>{order.status}</TableCell>
-              </TableRow>
+            {orders?.map((order) => (
+              <OrderTableRow key={order.id} order={order} onNext={handleNext} />
             ))}
           </TableBody>
-        </Table>
-      </TableContainer>
+        </StyledTable>
+      </StyledTableContainer>
     </div>
   );
 };
