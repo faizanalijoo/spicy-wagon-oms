@@ -21,7 +21,7 @@ const StyledAppBar = styled(AppBar)`
 
 const LogoImage = styled.img`
   padding-top: 10px;
-  height: 40px; // Adjust this value to fit your header height
+  height: 35px; // Adjust this value to fit your header height
   width: auto;
 `;
 

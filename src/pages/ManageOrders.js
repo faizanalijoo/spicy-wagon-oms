@@ -15,7 +15,7 @@ import styled from "styled-components";
 import api from "../services/api";
 import { apiEndpoints } from "../services/apiEndpoints";
 import { useAuth } from "../contexts/AuthContext";
-import OrderTableRow from "../components/OrderTableRow";
+import OrderTableRow from "../components/OrderTableRow/OrderTableRow";
 import { useNavigate } from "react-router-dom";
 
 const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
@@ -86,11 +86,10 @@ const ManageOrders = () => {
           <TableHead>
             <TableRow>
               <StyledTableCell>Order Details</StyledTableCell>
-              <StyledTableCell>Customer Details</StyledTableCell>
-              <StyledTableCell>Travel Info</StyledTableCell>
+              <StyledTableCell>Customer Travel Details</StyledTableCell>
+              <StyledTableCell>Booking Details</StyledTableCell>
               <StyledTableCell>Booking Info</StyledTableCell>
-              <StyledTableCell>Status & Updates</StyledTableCell>
-              <StyledTableCell>Next</StyledTableCell>
+              <StyledTableCell>Status</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
