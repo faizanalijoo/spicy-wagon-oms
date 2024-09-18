@@ -16,7 +16,6 @@ import api from "../services/api";
 import { apiEndpoints } from "../services/apiEndpoints";
 import { useAuth } from "../contexts/AuthContext";
 import OrderTableRow from "../components/OrderTableRow/OrderTableRow";
-import { useNavigate } from "react-router-dom";
 
 const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   width: "100%",
@@ -36,7 +35,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 const ManageOrders = () => {
-  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -71,11 +69,6 @@ const ManageOrders = () => {
     return <Typography color="error">{error}</Typography>;
   }
 
-  const handleNext = (orderId) => {
-    navigate(`/order/${orderId}`);
-    // Implement your logic here
-  };
-
   return (
     <div>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -94,7 +87,7 @@ const ManageOrders = () => {
           </TableHead>
           <TableBody>
             {orders?.map((order) => (
-              <OrderTableRow key={order.id} order={order} onNext={handleNext} />
+              <OrderTableRow key={order.id} order={order} />
             ))}
           </TableBody>
         </StyledTable>

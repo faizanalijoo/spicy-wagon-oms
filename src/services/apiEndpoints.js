@@ -18,7 +18,7 @@ export const apiEndpoints = {
 
   // Orders by date
   getOrdersDate: (id, date) => `dashboard/vendor/${id}/orders/${date}/`,
-  getOrdersDetails: (id, orderId) =>
+  getOrderDetails: (id, orderId) =>
     `dashboard/vendor/${id}/order/${orderId}/details`,
   confirmOrder: (id, orderId) =>
     `dashboard/vendor/${id}/order/${orderId}/confirm`,

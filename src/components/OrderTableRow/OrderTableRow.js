@@ -7,6 +7,7 @@ import BookingDetails from "./BookingDetails";
 import OrderStatusDetails from "./OrderStatusDetails";
 import IconButton from "@mui/material/IconButton";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { useNavigate } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   padding: theme.spacing ? theme.spacing(2) : "16px",
@@ -15,7 +16,14 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-const OrderTableRow = ({ order, onNext }) => {
+const OrderTableRow = ({ order }) => {
+  const navigate = useNavigate();
+
+  const handleNext = () => {
+    navigate(`/order/${order.order_id}`);
+    // Implement your logic here
+  };
+
   return (
     <TableRow>
       <StyledTableCell>
@@ -49,7 +57,7 @@ const OrderTableRow = ({ order, onNext }) => {
         />
       </StyledTableCell>
       <StyledTableCell>
-        <IconButton onClick={onNext} size="small">
+        <IconButton onClick={handleNext} size="small">
           <ChevronRightIcon />
         </IconButton>
       </StyledTableCell>
