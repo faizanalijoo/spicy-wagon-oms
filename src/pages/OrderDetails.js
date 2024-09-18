@@ -5,7 +5,7 @@ import {
   Paper,
   Box,
   Button,
-  Grid,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -13,11 +13,15 @@ import {
   TableHead,
   TableRow,
   Chip,
+  CircularProgress
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import PersonIcon from "@mui/icons-material/Person";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
+import api from "../services/api";
+import { apiEndpoints } from "../services/apiEndpoints";
+import { useAuth } from "../contexts/AuthContext";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -36,9 +40,21 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const InfoItem = styled(Box)(({ theme }) => ({
-  marginBottom: theme.spacing(1),
-}));
+// const SectionTitle = ({ icon, children }) => (
+//   <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+//     {icon}
+//     <Typography variant="h6">{children}</Typography>
+//   </Stack>
+// );
+
+const InfoItem = ({ label, value }) => (
+  <Box sx={{ mb: 2 }}>
+    <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+      {label}
+    </Typography>
+    <Typography variant="body2">{value}</Typography>
+  </Box>
+);
 
 const Label = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
@@ -51,57 +67,48 @@ const Value = styled(Typography)({
 
 const OrderDetails = () => {
   const { id } = useParams();
+  const { vendorId } = useAuth();
   const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Fetch order details here
-    // For now, we'll use mock data
-    setOrder({
-      id: "#1286890452",
-      restaurantDetails: "The Tandoor Hut Villa",
-      restaurantContact: "+91 9868563202",
-      gstRegistration: "O9AARCA6144P1ZV",
-      aggregator: "Spigoli Wagon",
-      aggregatorContact: "+91 8646882096",
-      bookingDateTime: "12th July 2024, 16:00 PM",
-      orderPush: "12th July 2024, 16:00 PM",
-      bookedFrom: "IRCTC E-Catering",
-      customerName: "Kundan Singh",
-      customerContact: "+91 9868563202",
-      deliveryStation: "MB / MORADABAD",
-      coachSeat: "B5/38",
-      trainDetails: "13151 - KOAA JAAT EXPRESS",
-      paymentMode: "Cash on Delivery",
-      items: [
-        {
-          name: "Butter Tawa Roti",
-          description: "1 Pcs",
-          quantity: 6,
-          basePrice: 16,
-          discount: "N/A",
-          totalBasePrice: "N/A",
-          totalTax: 4.8,
-          totalSellingPrice: 100.8,
-        },
-        {
-          name: "Chicken Kadhai",
-          description: "400 Gms",
-          quantity: 1,
-          basePrice: 311,
-          discount: "N/A",
-          totalBasePrice: "N/A",
-          totalTax: 15.56,
-          totalSellingPrice: 326.56,
-        },
-      ],
-      totalAmount: 198,
-      subTotal: 189.0,
-      gst: 9.45,
-      deliveryCharges: 0,
-      discount: 0,
-      amountPayable: 198,
-    });
-  }, [id]);
+    const fetchOrderDetail = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(
+          apiEndpoints.getOrderDetails(
+            vendorId, id
+          )
+        );
+      console.log("jere")
+
+        setOrder(response.data);
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to fetch order details. Please try again later.');
+        setLoading(false);
+      }
+    };
+
+    fetchOrderDetail();
+  }, [id, vendorId]);
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Typography color="error">{error}</Typography>
+      </Box>
+    );
+  }
 
   if (!order) {
     return <Typography>Loading...</Typography>;
@@ -130,80 +137,39 @@ const OrderDetails = () => {
         </Box>
       </Box>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <Paper elevation={2} style={{ padding: "20px" }}>
-            <SectionTitle>
-              <StorefrontIcon />
-              Outlet & Vendor Details
-            </SectionTitle>
-            <InfoItem>
-              <Label>ID</Label>
-              <Value>{order.id}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>RESTAURANT DETAILS</Label>
-              <Value>{order.restaurantDetails}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>RESTAURANT CONTACT</Label>
-              <Value>{order.restaurantContact}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>GST REGISTRATION</Label>
-              <Value>{order.gstRegistration}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>AGGREGATOR</Label>
-              <Value>{order.aggregator}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>AGGREGATOR CONTACT</Label>
-              <Value>{order.aggregatorContact}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>BOOKING DATE & TIME</Label>
-              <Value>{order.bookingDateTime}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>ORDER PUSH</Label>
-              <Value>{order.orderPush}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>BOOKING FROM</Label>
-              <Value>{order.bookedFrom}</Value>
-            </InfoItem>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <Paper elevation={2} style={{ padding: "20px" }}>
-            <SectionTitle>
-              <PersonIcon />
-              Customer Details
-            </SectionTitle>
-            <InfoItem>
-              <Label>CUSTOMER NAME</Label>
-              <Value>{order.customerName}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>CUSTOMER CONTACT</Label>
-              <Value>{order.customerContact}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>DELIVERY STATION</Label>
-              <Value>{order.deliveryStation}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>COACH/SEAT</Label>
-              <Value>{order.coachSeat}</Value>
-            </InfoItem>
-            <InfoItem>
-              <Label>TRAIN DETAILS</Label>
-              <Value>{order.trainDetails}</Value>
-            </InfoItem>
-          </Paper>
-        </Grid>
-      </Grid>
+      <Box sx={{ width: '100%' }}>
+      <Stack
+        direction={{ xs: 'column', md: 'row' }}
+        spacing={3}
+        sx={{ width: '100%' }}
+      >
+        <Paper elevation={2} sx={{ p: 3, flex: 1 }}>
+          <SectionTitle icon={<StorefrontIcon color="primary" />}>
+            Outlet & Vendor Details
+          </SectionTitle>
+          <InfoItem label="ID" value={order.id} />
+          <InfoItem label="RESTAURANT DETAILS" value={order.restaurantDetails} />
+          <InfoItem label="RESTAURANT CONTACT" value={order.restaurantContact} />
+          <InfoItem label="GST REGISTRATION" value={order.gstRegistration} />
+          <InfoItem label="AGGREGATOR" value={order.aggregator} />
+          <InfoItem label="AGGREGATOR CONTACT" value={order.aggregatorContact} />
+          <InfoItem label="BOOKING DATE & TIME" value={order.bookingDateTime} />
+          <InfoItem label="ORDER PUSH" value={order.orderPush} />
+          <InfoItem label="BOOKING FROM" value={order.bookedFrom} />
+        </Paper>
+
+        <Paper elevation={2} sx={{ p: 3, flex: 1 }}>
+          <SectionTitle icon={<PersonIcon color="primary" />}>
+            Customer Details
+          </SectionTitle>
+          <InfoItem label="CUSTOMER NAME" value={order.customerName} />
+          <InfoItem label="CUSTOMER CONTACT" value={order.customerContact} />
+          <InfoItem label="DELIVERY STATION" value={order.deliveryStation} />
+          <InfoItem label="COACH/SEAT" value={order.coachSeat} />
+          <InfoItem label="TRAIN DETAILS" value={order.trainDetails} />
+        </Paper>
+      </Stack>
+      </Box>
 
       <Box mt={3}>
         <Paper elevation={2} style={{ padding: "20px" }}>
@@ -237,7 +203,7 @@ const OrderDetails = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {order.items.map((item, index) => (
+                {order.data.orderItems.map((item, index) => (
                   <TableRow key={index}>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.description}</TableCell>
