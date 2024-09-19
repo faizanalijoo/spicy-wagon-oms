@@ -20,6 +20,7 @@ import OrderTableRow from "../components/OrderTableRow/OrderTableRow";
 const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   width: "100%",
   overflowX: "auto",
+  borderRadius: "10px"
 }));
 
 const StyledTable = styled(Table)(({ theme }) => ({
@@ -30,8 +31,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   fontWeight: "bold",
   backgroundColor: theme.palette?.background?.default || "#ffffff",
   "&:not(:last-child)": {
-    borderRight: `1px solid ${theme.palette?.divider || "#e0e0e0"}`,
+    borderRight: `1px solid ${theme.palette?.divider || "#757373"}`,
   },
+  borderBottom: `1px solid ${theme.palette?.divider || "#757373"}`,
 }));
 
 const ManageOrders = () => {
@@ -71,18 +73,15 @@ const ManageOrders = () => {
 
   return (
     <div>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Manage Orders
-      </Typography>
       <StyledTableContainer component={Paper}>
         <StyledTable sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <StyledTableCell>Order Details</StyledTableCell>
-              <StyledTableCell>Customer Travel Details</StyledTableCell>
-              <StyledTableCell>Booking Details</StyledTableCell>
-              <StyledTableCell>Booking Info</StyledTableCell>
-              <StyledTableCell>Status</StyledTableCell>
+              <StyledTableCell sx={{ width: '10%' }}>Order Details</StyledTableCell>
+              <StyledTableCell sx={{ width: '30%' }}>Customer Travel Details</StyledTableCell>
+              <StyledTableCell sx={{ width: '20%' }}>Booking Details</StyledTableCell>
+              <StyledTableCell sx={{ width: '35%' }}>Booking Info</StyledTableCell>
+              <StyledTableCell sx={{ width: '5%' }}>Status</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -8,6 +8,7 @@ import Sidebar from "./Sidebar";
 const LayoutContainer = styled(Box)`
   display: flex;
   width: 100%;
+  // background-image: linear-gradient(to bottom right, #791717, #2a0101);
 `;
 
 const MainContent = styled(Box)`
