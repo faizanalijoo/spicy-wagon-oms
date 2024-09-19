@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Chip } from "@mui/material";
+import { Box, Typography, Chip, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import UpdateIcon from "@mui/icons-material/Update";
 import PersonIcon from "@mui/icons-material/Person";
@@ -45,24 +45,27 @@ const OrderStatusDetails = ({ lastUpdated, status, updatedBy, remarks }) => {
           <Value>{lastUpdated}</Value>
         </Box>
       </DetailRow>
-      <DetailRow>
-        <Label>Status</Label>
-        <StatusChip label={status} size="small" />
-      </DetailRow>
-      <DetailRow>
-        <PersonIcon fontSize="small" color="action" />
-        <Box>
-          <Label>Updated</Label>
-          <Value>{updatedBy}</Value>
-        </Box>
-      </DetailRow>
-      <DetailRow>
-        <CommentIcon fontSize="small" color="action" />
-        <Box>
-          <Label>Remarks</Label>
-          <Value>{remarks || "N/A"}</Value>
-        </Box>
-      </DetailRow>
+      <Divider />
+      <Box sx={{ display: "flex", direction: "row" }}>
+        <DetailRow>
+          <Label>Status</Label>
+          <Value sx={{ color: '#129929' }}>{status}</Value>
+        </DetailRow>
+        <DetailRow>
+          <PersonIcon fontSize="small" color="action" />
+          <Box>
+            <Label>Updated</Label>
+            <Value>{updatedBy}</Value>
+          </Box>
+        </DetailRow>
+        <DetailRow>
+          <CommentIcon fontSize="small" color="action" />
+          <Box>
+            <Label>Remarks</Label>
+            <Value>{remarks || "N/A"}</Value>
+          </Box>
+        </DetailRow>
+      </Box>
     </DetailContainer>
   );
 };

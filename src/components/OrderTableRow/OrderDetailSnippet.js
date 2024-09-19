@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Divider, Typography, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaymentIcon from "@mui/icons-material/Payment";
@@ -38,16 +38,19 @@ const OrderDetailSnippet = ({ id, amount, payment }) => {
         <Label>ID</Label>
         <OrderId>{id}</OrderId>
       </DetailRow>
-      <DetailRow>
-        <ReceiptIcon fontSize="small" color="action" />
-        <Label>AMOUNT</Label>
-        <Value>{amount}</Value>
-      </DetailRow>
-      <DetailRow>
-        <PaymentIcon fontSize="small" color="action" />
-        <Label>PAYMENT</Label>
-        <Value>{payment}</Value>
-      </DetailRow>
+      <Divider />
+      <Stack direction="row" spacing={2}>
+        <DetailRow>
+          <ReceiptIcon fontSize="small" color="action" />
+          <Label>AMOUNT</Label>
+          <Value>{amount}</Value>
+        </DetailRow>
+        <DetailRow>
+          <PaymentIcon fontSize="small" color="action" />
+          <Label>PAYMENT</Label>
+          <Value>{payment}</Value>
+        </DetailRow>
+      </Stack>
     </DetailContainer>
   );
 };

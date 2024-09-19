@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import EventIcon from "@mui/icons-material/Event";
@@ -42,6 +42,7 @@ const BookingDetails = ({ bookingDateTime, bookedFrom }) => {
           <Value>{bookingDateTime}</Value>
         </Box>
       </DetailRow>
+      <Divider />
       <DetailRow>
         <EventIcon fontSize="small" color="action" />
         <Box>

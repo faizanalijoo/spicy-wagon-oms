@@ -10,10 +10,11 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useNavigate } from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  padding: theme.spacing ? theme.spacing(2) : "16px",
+  // padding: theme.spacing ? theme.spacing(2) : "16px",
   "&:not(:last-child)": {
-    borderRight: `1px solid ${theme.palette?.divider || "#e0e0e0"}`,
+    borderRight: `1px solid ${theme.palette?.divider || "#757373"}`,
   },
+  borderBottom: `1px solid ${theme.palette?.divider || "#757373"}`,
 }));
 
 const OrderTableRow = ({ order }) => {

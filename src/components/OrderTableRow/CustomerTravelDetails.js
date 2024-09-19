@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography, Stack, Divider } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PersonIcon from "@mui/icons-material/Person";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -9,7 +9,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 const DetailContainer = styled(Box)(({ theme }) => ({
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "row",
   gap: theme.spacing(1),
 }));
 
@@ -32,51 +32,48 @@ const Value = styled(Typography)(({ theme }) => ({
 
 const CustomerTravelDetails = ({ name, contact, seat, train, station }) => {
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} sm={6}>
-        <DetailContainer>
-          <DetailRow>
-            <PersonIcon fontSize="small" color="action" />
-            <Box>
-              <Label>Name</Label>
-              <Value>{name}</Value>
-            </Box>
-          </DetailRow>
-          <DetailRow>
-            <PhoneIcon fontSize="small" color="action" />
-            <Box>
-              <Label>Contact</Label>
-              <Value>{contact}</Value>
-            </Box>
-          </DetailRow>
-          <DetailRow>
-            <EventSeatIcon fontSize="small" color="action" />
-            <Box>
-              <Label>Seat</Label>
-              <Value>{seat}</Value>
-            </Box>
-          </DetailRow>
-        </DetailContainer>
-      </Grid>
-      <Grid item xs={12} sm={6}>
-        <DetailContainer>
-          <DetailRow>
-            <TrainIcon fontSize="small" color="action" />
-            <Box>
-              <Label>Train</Label>
-              <Value>{train}</Value>
-            </Box>
-          </DetailRow>
-          <DetailRow>
-            <LocationOnIcon fontSize="small" color="action" />
-            <Box>
-              <Label>Station</Label>
-              <Value>{station}</Value>
-            </Box>
-          </DetailRow>
-        </DetailContainer>
-      </Grid>
-    </Grid>
+    <Stack direction="column" spacing={2}>
+      <DetailContainer>
+        <DetailRow>
+          <PersonIcon fontSize="small" color="action" />
+          <Box>
+            <Label>Name</Label>
+            <Value>{name}</Value>
+          </Box>
+        </DetailRow>
+        <DetailRow>
+          <PhoneIcon fontSize="small" color="action" />
+          <Box>
+            <Label>Contact</Label>
+            <Value>{contact}</Value>
+          </Box>
+        </DetailRow>
+        <DetailRow>
+          <EventSeatIcon fontSize="small" color="action" />
+          <Box>
+            <Label>Seat</Label>
+            <Value>{seat}</Value>
+          </Box>
+        </DetailRow>
+      </DetailContainer>
+      <Divider />
+      <DetailContainer>
+        <DetailRow>
+          <TrainIcon fontSize="small" color="action" />
+          <Box>
+            <Label>Train</Label>
+            <Value>{train}</Value>
+          </Box>
+        </DetailRow>
+        <DetailRow>
+          <LocationOnIcon fontSize="small" color="action" />
+          <Box>
+            <Label>Station</Label>
+            <Value>{station}</Value>
+          </Box>
+        </DetailRow>
+      </DetailContainer>
+    </Stack>
   );
 };
 
