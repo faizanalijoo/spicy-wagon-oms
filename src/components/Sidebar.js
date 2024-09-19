@@ -20,7 +20,7 @@ import { useTheme } from "@mui/material/styles";
 const StyledDrawer = styled(Drawer)`
   & .MuiDrawer-paper {
     width: 240px;
-    background-color: ${(props) => props.theme.palette.secondary.main};
+    background-image: linear-gradient(to bottom right, #791717, #2a0101);
     color: white;
   }
 `;
