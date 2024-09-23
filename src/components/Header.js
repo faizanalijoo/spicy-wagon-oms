@@ -44,7 +44,7 @@ const OutletSelector = styled(Button)({
 });
 
 const Header = () => {
-  const { logout, vendors } = useAuth();
+  const { logout, vendors, setVendorId } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [anchorElOutlet, setAnchorElOutlet] = React.useState(null);
   const [selectedOutlet, setSelectedOutlet] = useState(vendors[0].outlet.name);
@@ -61,7 +61,8 @@ const Header = () => {
     setAnchorElOutlet(null);
   };
 
-  const handleOutletChange = (outlet) => {
+  const handleOutletChange = (outlet, outletId) => {
+    setVendorId(outletId)
     setSelectedOutlet(outlet);
     handleClose();
   };
@@ -98,7 +99,7 @@ const Header = () => {
               onClose={handleOutletClose}
             >
               {vendors.map((v) => (
-                <MenuItem onClick={() => handleOutletChange(v.outlet.name)}>
+                <MenuItem onClick={() => handleOutletChange(v.outlet.name, v.outlet.outlet_id)}>
                   {v.outlet.companyName}
                 </MenuItem>
               ))}

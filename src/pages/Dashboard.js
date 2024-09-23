@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Box,
   Typography,
   Paper,
-  Grid,
   Button,
   Table,
   TableBody,
@@ -12,6 +11,9 @@ import {
   TableHead,
   TableRow,
   IconButton,
+  Snackbar,
+  Alert,
+  Stack,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -21,6 +23,14 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ErrorIcon from "@mui/icons-material/Error";
 import PeopleIcon from "@mui/icons-material/People";
+import api from "../services/api";
+import { apiEndpoints } from "../services/apiEndpoints";
+import * as moment from "moment";
+import { useAuth } from "../contexts/AuthContext";
+import { useOrdersFetch } from "../hooks/useOrdersFetch";
+import DashboardCard from "../components/DashboardCard";
+
+const REFRESH_OFFER = "New orders available. Click to refresh.";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -32,67 +42,136 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const SummaryIcon = styled(Box)(({ theme, color }) => ({
-  backgroundColor: color,
+  // backgroundColor: color,
   borderRadius: "50%",
   padding: theme.spacing(1),
   marginBottom: theme.spacing(1),
 }));
 
-const SummaryCard = ({ icon, value, label, color }) => (
+const SummaryCard = ({ icon, count, label, color }) => (
   <StyledPaper elevation={3}>
-    <SummaryIcon color={color}>{icon}</SummaryIcon>
-    <Typography variant="h4" component="div">
-      {value}
-    </Typography>
-    <Typography variant="body2" color="text.secondary">
-      {label}
-    </Typography>
+    <Stack direction="row">
+      <SummaryIcon color={color}>{icon}</SummaryIcon>
+      <Stack>
+        <Typography variant="h4" component="div">
+          {count}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {label}
+        </Typography>
+      </Stack>
+    </Stack>
   </StyledPaper>
 );
 
+const GridContainer = styled(Box)`
+  display: flex;
+  flex-wrap: wrap;
+  margin: -12px; // Compensate for GridItem padding
+  margin-bottom: 32px;
+`;
+
+const GridItem = styled(Box)`
+  padding: 12px;
+  width: 100%;
+
+  @media (min-width: 600px) {
+    width: 50%;
+  }
+
+  @media (min-width: 900px) {
+    width: 16.666%; // Approximately 2/12 for md breakpoint
+  }
+`;
+
+function getHighestId(orders) {
+  if (!Array.isArray(orders) || orders.length === 0) {
+    return null;
+  }
+
+  return orders.reduce((maxId, order) => {
+    return Math.max(maxId, order.id);
+  }, orders[0].id);
+}
+
 const Dashboard = () => {
   const [timePeriod, setTimePeriod] = useState("Today");
+  const [orders, setOrders] = useState([]);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [latestOrderId, setLatestOrderId] = useState(0);
+  const { vendorId } = useAuth();
 
   const summaryData = [
     {
-      icon: <ShoppingBagIcon />,
-      value: 156,
+      icon: <ShoppingBagIcon fontSize="large" />,
+      count: 156,
       label: "BOOKED ORDERS",
-      color: "#ffcccb",
     },
     {
-      icon: <AttachMoneyIcon />,
-      value: "₹4550",
+      icon: <AttachMoneyIcon fontSize="large" />,
+      count: "₹4550",
       label: "TOTAL EARNINGS",
-      color: "#c8e6c9",
     },
     {
-      icon: <LocalShippingIcon />,
-      value: 19,
+      icon: <LocalShippingIcon fontSize="large" />,
+      count: 19,
       label: "TOTAL DELIVERED",
-      color: "#bbdefb",
     },
-    { icon: <CancelIcon />, value: 11, label: "CANCELLED", color: "#ffcccb" },
-    { icon: <ErrorIcon />, value: 0, label: "UNDELIVERED", color: "#ffe0b2" },
-    { icon: <PeopleIcon />, value: 128, label: "CUSTOMERS", color: "#e1bee7" },
+    { icon: <CancelIcon fontSize="large" />, count: 11, label: "CANCELLED" },
+    { icon: <ErrorIcon fontSize="large" />, count: 0, label: "UNDELIVERED" },
+    { icon: <PeopleIcon fontSize="large" />, count: 128, label: "CUSTOMERS" },
   ];
 
-  const orders = [
-    {
-      id: "#1286890452",
-      amount: "₹540.0",
-      customerName: "Rajesh Kumar Singh",
-      seat: "CNF/S2/49",
-      trainNumber: "12985",
-      stationCode: "PNBE",
-      bookingDateTime: "12TH JULY 2024, 16:00 PM",
-      bookingPlatform: "IRCTC E-CATERING",
-    },
-    // Add more orders here...
-  ];
+  const { newOrdersCount, fetchOrdersSinceLatest } = useOrdersFetch(
+    vendorId,
+    latestOrderId,
+    count
+  );
+
+  // if (newOrdersCount > 0) {
+  //   fetchOrdersSinceLatest(latestOrderId);
+  // }
+
+  const fetchOrders = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await api.get(
+        apiEndpoints.getOrdersDate(
+          vendorId,
+          moment(new Date()).format("YYYY-MM-DD")
+        )
+      );
+      setOrders(response.data.results);
+      setCount(response.data.count);
+      setLatestOrderId(getHighestId(response.data.results));
+      fetchOrdersSinceLatest(getHighestId(response.data.results));
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch orders. Please try again later.");
+      setLoading(false);
+    }
+  }, [vendorId]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const [selectedDate, setSelectedDate] = React.useState(new Date());
+
+  const handleRefresh = (date) => {
+    console.log("Refreshing orders for date:", date);
+  };
 
   return (
     <Box sx={{ p: 3 }}>
+      <Snackbar
+        open={newOrdersCount > 0}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="success">{REFRESH_OFFER}</Alert>
+      </Snackbar>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
         <Box>
           <Button
@@ -119,13 +198,13 @@ const Dashboard = () => {
         </IconButton>
       </Box>
 
-      <Grid container spacing={3} sx={{ mb: 4 }}>
+      <GridContainer>
         {summaryData.map((item, index) => (
-          <Grid item xs={12} sm={6} md={2} key={index}>
-            <SummaryCard {...item} />
-          </Grid>
+          <GridItem key={index}>
+            <DashboardCard {...item} />
+          </GridItem>
         ))}
-      </Grid>
+      </GridContainer>
 
       <Typography variant="h6" sx={{ mb: 2 }}>
         Upcoming Orders
