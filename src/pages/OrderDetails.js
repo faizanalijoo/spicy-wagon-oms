@@ -74,8 +74,6 @@ const OrderDetails = () => {
         const response = await api.get(
           apiEndpoints.getOrderDetails(vendorId, id)
         );
-        console.log("jere");
-
         setOrder(response.data);
         setLoading(false);
       } catch (err) {

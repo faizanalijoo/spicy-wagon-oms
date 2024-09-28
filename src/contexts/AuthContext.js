@@ -69,7 +69,9 @@ export const AuthProvider = ({ children }) => {
     userRole,
     vendorId,
     loading,
-    vendors
+    vendors,
+    setVendors,
+    setVendorId
   };
 
   return (
