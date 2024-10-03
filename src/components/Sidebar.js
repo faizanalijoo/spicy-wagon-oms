@@ -7,7 +7,7 @@ import {
   ListItemText,
   Toolbar,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StoreIcon from "@mui/icons-material/Store";
@@ -33,6 +33,9 @@ const StyledListItem = styled(ListItem)`
 
 const Sidebar = () => {
   const theme = useTheme();
+  let location = useLocation();
+
+  console.log('loca', location)
 
   const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
@@ -57,6 +60,7 @@ const Sidebar = () => {
             key={item.text}
             component={Link}
             to={item.path}
+            sx={{ backgroundColor: item.path === location.pathname && `rgba(255, 255, 255, 0.1)` }}
           >
             <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
             <ListItemText sx={{ color: "white" }} primary={item.text} />
