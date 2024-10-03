@@ -4,12 +4,6 @@ import {
   Typography,
   Paper,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   IconButton,
   Snackbar,
   Alert,
@@ -23,12 +17,14 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ErrorIcon from "@mui/icons-material/Error";
 import PeopleIcon from "@mui/icons-material/People";
+import { Refresh as RefreshIcon } from '@mui/icons-material';
 import api from "../services/api";
 import { apiEndpoints } from "../services/apiEndpoints";
 import * as moment from "moment";
 import { useAuth } from "../contexts/AuthContext";
 import { useOrdersFetch } from "../hooks/useOrdersFetch";
 import DashboardCard from "../components/DashboardCard";
+import OrdersTable from "../components/OrdersTable";
 
 const REFRESH_OFFER = "New orders available. Click to refresh.";
 
@@ -124,17 +120,20 @@ const Dashboard = () => {
     { icon: <PeopleIcon fontSize="large" />, count: 128, label: "CUSTOMERS" },
   ];
 
-  const { newOrdersCount, fetchOrdersSinceLatest } = useOrdersFetch(
+  const { newOrdersCount, fetchOrdersSinceLatest, setNewOrdersCount } = useOrdersFetch(
     vendorId,
     latestOrderId,
     count
   );
+
+  console.log('new', newOrdersCount)
 
   // if (newOrdersCount > 0) {
   //   fetchOrdersSinceLatest(latestOrderId);
   // }
 
   const fetchOrders = useCallback(async () => {
+    console.log("ins")
     try {
       setLoading(true);
       const response = await api.get(
@@ -160,8 +159,9 @@ const Dashboard = () => {
 
   const [selectedDate, setSelectedDate] = React.useState(new Date());
 
-  const handleRefresh = (date) => {
-    console.log("Refreshing orders for date:", date);
+  const handleRefresh = () => {
+    fetchOrders();
+    setNewOrdersCount(0);
   };
 
   return (
@@ -170,7 +170,21 @@ const Dashboard = () => {
         open={newOrdersCount > 0}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="success">{REFRESH_OFFER}</Alert>
+        <Alert
+          severity="success"
+          action={
+            <Button
+              color="inherit"
+              size="small"
+              onClick={handleRefresh}
+              startIcon={<RefreshIcon />}
+              >
+              Refresh
+            </Button>
+          }
+          >
+            {REFRESH_OFFER}
+          </Alert>
       </Snackbar>
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
         <Box>
@@ -210,48 +224,7 @@ const Dashboard = () => {
         Upcoming Orders
       </Typography>
 
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="upcoming orders table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Order Details</TableCell>
-              <TableCell>Customer Details</TableCell>
-              <TableCell>Booking Details</TableCell>
-              <TableCell>Booking Platform</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>
-                  <Typography variant="body2">Order ID: {order.id}</Typography>
-                  <Typography variant="body2">
-                    Amount: {order.amount}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">
-                    Name: {order.customerName}
-                  </Typography>
-                  <Typography variant="body2">Seat: {order.seat}</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">
-                    Train Number: {order.trainNumber}
-                  </Typography>
-                  <Typography variant="body2">
-                    Station Code: {order.stationCode}
-                  </Typography>
-                  <Typography variant="body2">
-                    Date & Time: {order.bookingDateTime}
-                  </Typography>
-                </TableCell>
-                <TableCell>{order.bookingPlatform}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <OrdersTable orders={orders} />
     </Box>
   );
 };

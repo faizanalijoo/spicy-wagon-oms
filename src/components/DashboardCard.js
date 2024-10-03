@@ -45,7 +45,6 @@ const OrderLabel = styled(Typography)`
 `;
 
 const DashboardCard = ({ icon, count, label }) => {
-    console.log('count', icon, count, label)
   return (
     <StyledCard>
       <CardContentWrapper>

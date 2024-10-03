@@ -18,16 +18,12 @@ export const useOrdersFetch = (outletId, latestOrderId = 0, count) => {
         ) + `?since_id=${sinceId}`;
       try {
         const response = await api.get(url);
-        const data = await response.json();
-        console.log("ssss", data.res.count, newOrdersCount, count)
-        if (data.results.count > newOrdersCount) {
-          setNewOrdersCount(data.count);
-          const newCount = data.count - count;
-          if (newCount > 0) {
+        const data = response.data;
+        console.log('data', data)
+          if (data.count > 0) {
             speak({
-              text: `${newCount} new order${newCount > 1 ? "s" : ""} received`,
+              text: `${data.count} new order${data.count > 1 ? "s" : ""} received`,
             });
-          }
         }
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -44,5 +40,5 @@ export const useOrdersFetch = (outletId, latestOrderId = 0, count) => {
     return () => clearInterval(intervalId);
   }, [fetchOrdersSinceLatest, latestOrderId]);
 
-  return { newOrdersCount, fetchOrdersSinceLatest };
+  return { newOrdersCount, fetchOrdersSinceLatest, setNewOrdersCount };
 };
