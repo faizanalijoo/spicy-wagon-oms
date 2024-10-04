@@ -3,6 +3,7 @@ import { Box, Divider, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import EventIcon from "@mui/icons-material/Event";
+import * as moment from "moment";
 
 const DetailContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -39,7 +40,7 @@ const BookingDetails = ({ bookingDateTime, bookedFrom }) => {
         <GreenDot />
         <Box>
           <Label>Booking Date & Time</Label>
-          <Value>{bookingDateTime}</Value>
+          <Value>{moment(bookingDateTime, 'MM-DD-YYYY HH:mm a').format('MMMM Do YYYY, h:mm:ss a')}</Value>
         </Box>
       </DetailRow>
       <Divider />
