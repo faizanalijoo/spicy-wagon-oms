@@ -35,8 +35,6 @@ const Sidebar = () => {
   const theme = useTheme();
   let location = useLocation();
 
-  console.log('loca', location)
-
   const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
     {

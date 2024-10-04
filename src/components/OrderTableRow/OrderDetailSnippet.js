@@ -3,6 +3,7 @@ import { Box, Divider, Typography, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import PaymentIcon from "@mui/icons-material/Payment";
+import { getDisplayValue, PAYMENT_TYPES } from "../../utils/constants";
 
 const DetailContainer = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -48,7 +49,7 @@ const OrderDetailSnippet = ({ id, amount, payment }) => {
         <DetailRow>
           <PaymentIcon fontSize="small" color="action" />
           <Label>PAYMENT</Label>
-          <Value>{payment}</Value>
+          <Value>{getDisplayValue(PAYMENT_TYPES, payment)}</Value>
         </DetailRow>
       </Stack>
     </DetailContainer>

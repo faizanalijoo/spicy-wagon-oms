@@ -19,7 +19,7 @@ export const useOrdersFetch = (outletId, latestOrderId = 0, count) => {
       try {
         const response = await api.get(url);
         const data = response.data;
-        console.log('data', data)
+        setNewOrdersCount(data.count);
           if (data.count > 0) {
             speak({
               text: `${data.count} new order${data.count > 1 ? "s" : ""} received`,

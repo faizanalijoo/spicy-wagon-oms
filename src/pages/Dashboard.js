@@ -126,14 +126,7 @@ const Dashboard = () => {
     count
   );
 
-  console.log('new', newOrdersCount)
-
-  // if (newOrdersCount > 0) {
-  //   fetchOrdersSinceLatest(latestOrderId);
-  // }
-
   const fetchOrders = useCallback(async () => {
-    console.log("ins")
     try {
       setLoading(true);
       const response = await api.get(
