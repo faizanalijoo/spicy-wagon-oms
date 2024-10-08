@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { 
   Typography, 
   Paper, 
-  Grid, 
   Box, 
   Table, 
   TableBody, 
@@ -11,11 +10,16 @@ import {
   TableHead, 
   TableRow 
 } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import DescriptionIcon from '@mui/icons-material/Description';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import InfoIcon from '@mui/icons-material/Info';
 import GroupIcon from '@mui/icons-material/Group';
+import api from "../services/api";
+import { apiEndpoints } from "../services/apiEndpoints";
+import { useAuth } from "../contexts/AuthContext";
+import CenteredCircularProgress from '../components/CenteredCircularProgress';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -43,76 +47,89 @@ const Value = styled(Typography)({
   fontWeight: 500,
 });
 
+const InfoItemDiv = styled('div')(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
+
 const InfoItem = ({ label, value }) => (
-  <Box mb={2}>
-    <Label>{label}</Label>
-    <Value>{value}</Value>
-  </Box>
+  <InfoItemDiv>
+  <Label variant="subtitle2">{label}</Label>
+  <Value>{value}</Value>
+</InfoItemDiv>
 );
 
 const OutletDetails = () => {
-  // This would typically come from an API or props
-  const outletData = {
-    outletName: 'Deepak Dhaba',
-    outletId: '265',
-    id: '134',
-    companyName: 'Deepak Dhaba',
-    deliveredBy: 'Vendor',
-    deliveryCost: '₹ 0.00',
-    fsaiNumber: '19824567981094',
-    fsaiValidUpto: '2024-10-17',
-    gstNumber: '09AARCA6144P1ZV',
-    minimumOrderAmount: '₹ 140.00',
-    status: 'ACTIVE',
-    address: 'Vinayak Complex, Station Road',
-    city: 'Patna',
-    stationCode: 'PNBE',
-    email: 'deepakdhaba@gmail.com',
-    mobileNumber: '9876467236',
-    state: 'Bihar',
-    latitude: 'N/A',
-    longitude: 'N/A',
-    orderTiming: '50',
-    openingTime: '07:00:00',
-    closingTime: '23:00:00',
-    details: 'N/A',
-    prepaid: 'N/A',
-    featured: 'NO',
-    numberOfRatings: '128',
-    averageRatings: '4.6',
-    vendors: [
-      { user: '9846723896', status: 'Active' },
-      { user: '8646921690', status: 'Not Active' },
-    ],
-  };
+  const [loading, setLoading] = useState(true);
+  const [outletData, setOutletData] = useState({})
+  const [error, setError] = useState(null);
+
+  const { vendorId } = useAuth();
+
+  const fetchOutletDetail = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await api.get(
+        apiEndpoints.getOutletDetails(
+          vendorId
+        )
+      );
+
+      setOutletData(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch orders. Please try again later.");
+      setLoading(false);
+    }
+  }, [vendorId]);
+
+  useEffect(() => {
+    fetchOutletDetail();
+  }, [fetchOutletDetail]);
+
+  if (loading) {
+    return <CenteredCircularProgress />;
+  }
+
+  if (error) {
+    return <Typography color="error">{error}</Typography>;
+  }
+
+  console.log('outletdata', outletData)
 
   return (
     <StyledPaper>
       <Typography variant="h5" gutterBottom>Outlet Details</Typography>
 
+     
       <Box mb={4}>
         <SectionTitle>
           <DescriptionIcon />
           Basic Information
         </SectionTitle>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
-            <InfoItem label="OUTLET NAME" value={outletData.outletName} />
+          <Grid item xs={12} sm={3}>
+            <InfoItem label="OUTLET NAME" value={outletData.name} />
             <InfoItem label="COMPANY NAME" value={outletData.companyName} />
-            <InfoItem label="FSAI NUMBER" value={outletData.fsaiNumber} />
-            <InfoItem label="MINIMUM ORDER AMOUNT" value={outletData.minimumOrderAmount} />
+            <InfoItem label="FSAI NUMBER" value={outletData.fssaiNo} />
+            <InfoItem label="MINIMUM ORDER AMOUNT" value={outletData.minOrderAmount} />
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <InfoItem label="OUTLET ID" value={outletData.outletId} />
-            <InfoItem label="DELIVERED BY" value={outletData.deliveredBy} />
-            <InfoItem label="FSAI VALID UPTO" value={outletData.fsaiValidUpto} />
+          <Grid item xs={12} sm={3}>
+            <InfoItem label="OUTLET ID" value={outletData.outlet_id} />
+            <InfoItem label="DELIVERED BY" value={outletData.delivered_by} />
+            <InfoItem label="FSAI VALID UPTO" value={outletData.fssaiValidUpto} />
             <InfoItem label="STATUS" value={outletData.status} />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid item xs={12} sm={3}>
             <InfoItem label="ID" value={outletData.id} />
             <InfoItem label="DELIVERY COST" value={outletData.deliveryCost} />
-            <InfoItem label="GST NUMBER" value={outletData.gstNumber} />
+            <InfoItem label="GST NUMBER" value={outletData.gstNo} />
           </Grid>
+          <img
+            src={`${outletData.logoImage}`}
+            alt={outletData.name}
+            loading="lazy"
+            style={{ height: '200px', width: '200px', margin: '30px'}}
+          />
         </Grid>
       </Box>
 
@@ -129,11 +146,11 @@ const OutletDetails = () => {
           </Grid>
           <Grid item xs={12} sm={4}>
             <InfoItem label="CITY" value={outletData.city} />
-            <InfoItem label="MOBILE NUMBER" value={outletData.mobileNumber} />
+            <InfoItem label="MOBILE NUMBER" value={outletData.mobile} />
             <InfoItem label="LONGITUDE" value={outletData.longitude} />
           </Grid>
           <Grid item xs={12} sm={4}>
-            <InfoItem label="STATION CODE" value={outletData.stationCode} />
+            <InfoItem label="STATION CODE" value={outletData.station_code} />
             <InfoItem label="STATE" value={outletData.state} />
           </Grid>
         </Grid>
@@ -146,18 +163,18 @@ const OutletDetails = () => {
         </SectionTitle>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={4}>
-            <InfoItem label="ORDER TIMING" value={outletData.orderTiming} />
+            <InfoItem label="ORDER TIMING" value={outletData.order_timing} />
             <InfoItem label="DETAILS" value={outletData.details} />
-            <InfoItem label="NUMBER OF RATINGS" value={outletData.numberOfRatings} />
+            <InfoItem label="NUMBER OF RATINGS" value={outletData.n_ratings} />
           </Grid>
           <Grid item xs={12} sm={4}>
             <InfoItem label="OPENING TIME" value={outletData.openingTime} />
-            <InfoItem label="PREPAID" value={outletData.prepaid} />
-            <InfoItem label="AVERAGE RATINGS" value={outletData.averageRatings} />
+            <InfoItem label="PREPAID" value={outletData.prepaid ? 'Yes' : 'No'} />
+            <InfoItem label="AVERAGE RATINGS" value={outletData.average_rating} />
           </Grid>
           <Grid item xs={12} sm={4}>
             <InfoItem label="CLOSING TIME" value={outletData.closingTime} />
-            <InfoItem label="FEATURED" value={outletData.featured} />
+            <InfoItem label="FEATURED" value={outletData.featured ? 'Yes' : 'No'} />
           </Grid>
         </Grid>
       </Box>
@@ -171,15 +188,17 @@ const OutletDetails = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>Id</TableCell>
                 <TableCell>User</TableCell>
                 <TableCell>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {outletData.vendors.map((vendor, index) => (
+              {outletData?.vendors?.map((vendor, index) => (
                 <TableRow key={index}>
+                  <TableCell>{vendor.id}</TableCell>
                   <TableCell>{vendor.user}</TableCell>
-                  <TableCell>{vendor.status}</TableCell>
+                  <TableCell>{vendor.is_active ? 'Active' : 'Not Active'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -19,6 +19,7 @@ import HelpIcon from "@mui/icons-material/Help";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import { useVendor } from '../contexts/VendorContext';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -40,15 +41,15 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
 }));
 
 const Settings = () => {
-  const [refreshTime, setRefreshTime] = useState("2");
-  const [notifications, setNotifications] = useState(true);
+
+  const { refreshTime, setRefreshTime, isNotificationOn, setIsNotificationOn } = useVendor();
 
   const handleRefreshTimeChange = (event) => {
     setRefreshTime(event.target.value);
   };
 
   const handleNotificationChange = (event) => {
-    setNotifications(event.target.checked);
+    setIsNotificationOn(event.target.checked);
   };
 
   return (
@@ -74,7 +75,7 @@ const Settings = () => {
           <Select
             labelId="refresh-time-label"
             id="refresh-time-select"
-            value={refreshTime}
+            value={refreshTime/(60000)}
             label="Please select the time for refresh :"
             onChange={handleRefreshTimeChange}
           >
@@ -94,9 +95,9 @@ const Settings = () => {
         <Box display="flex" alignItems="center">
           <Typography mr={2}>Notifications :</Typography>
           <Switch
-            checked={notifications}
+            checked={isNotificationOn}
             onChange={handleNotificationChange}
-            inputProps={{ "aria-label": "toggle notifications" }}
+            inputProps={{ "aria-label": "toggle isNotificationOn" }}
           />
         </Box>
       </Box>
