@@ -18,6 +18,10 @@ export const apiEndpoints = {
 
   // Orders by date
   getOrdersDate: (id, date) => `dashboard/vendor/${id}/orders/${date}/`,
+
+  getOrdersBetween: (id, pageSize, etaStartDate, etaEndDate) =>
+    `dashboard/vendor/${id}/orders/?ordering=eta&page_size=${pageSize}&eta_start_date=${etaStartDate}&eta_end_date=${etaEndDate}`,
+
   getOrderDetails: (id, orderId) =>
     `dashboard/vendor/${id}/order/${orderId}/details`,
   confirmOrder: (id, orderId) =>

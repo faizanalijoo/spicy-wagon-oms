@@ -64,7 +64,7 @@ const Header = () => {
   const handleOutletChange = (outlet, outletId) => {
     setVendorId(outletId)
     setSelectedOutlet(outlet);
-    handleClose();
+    handleOutletClose();
   };
 
   const theme = useTheme();
