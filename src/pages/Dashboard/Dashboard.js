@@ -1,51 +1,35 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  Box,
-  Typography,
   Button,
-  IconButton,
   Snackbar,
   Alert,
+  Stack,
+  Grid,
+  TableContainer,
+  TableHead,
+  TableCell,
+  Table,
+  TableBody,
+  TableRow,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import CancelIcon from "@mui/icons-material/Cancel";
-import ErrorIcon from "@mui/icons-material/Error";
-import PeopleIcon from "@mui/icons-material/People";
 import { Refresh as RefreshIcon } from "@mui/icons-material";
-import api from "../services/api";
-import { apiEndpoints } from "../services/apiEndpoints";
+import api from "../../services/api";
+import { apiEndpoints } from "../../services/apiEndpoints";
 import * as moment from "moment";
-import { useAuth } from "../contexts/AuthContext";
-import { useOrdersFetch } from "../hooks/useOrdersFetch";
-import DashboardCard from "../components/DashboardCard";
-import OrdersTable from "../components/OrdersTable";
-import CenteredCircularProgress from '../components/CenteredCircularProgress';
+import { useAuth } from "../../contexts/AuthContext";
+import { useOrdersFetch } from "../../hooks/useOrdersFetch";
+import DashboardCard from "../../components/DashboardCard";
+import CustomTabs from "../../components/CustomTabs";
+import { FaBagShopping, FaTruck } from "react-icons/fa6";
+import { HiShoppingCart } from "react-icons/hi";
+import { AiFillCloseCircle } from "react-icons/ai";
+import { PiUsersFill, PiWarningCircleFill } from "react-icons/pi";
+import TableItem from "../../components/TableItem";
+import { AppColors } from "../../utils/AppColors";
+import { useNavigate } from "react-router-dom";
+import OrdersListMobile from "../Orders/Components/OrdersListMobile";
 
 const REFRESH_OFFER = "New orders available. Click to refresh.";
-
-const GridContainer = styled(Box)`
-  display: flex;
-  flex-wrap: wrap;
-  margin: -12px; // Compensate for GridItem padding
-  margin-bottom: 32px;
-`;
-
-const GridItem = styled(Box)`
-  padding: 12px;
-  width: 100%;
-
-  @media (min-width: 600px) {
-    width: 50%;
-  }
-
-  @media (min-width: 900px) {
-    width: 16.666%; // Approximately 2/12 for md breakpoint
-  }
-`;
 
 function getHighestId(orders) {
   if (!Array.isArray(orders) || orders.length === 0) {
@@ -58,6 +42,7 @@ function getHighestId(orders) {
 }
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [timePeriod, setTimePeriod] = useState("Today");
   const [orders, setOrders] = useState([]);
   const [count, setCount] = useState(0);
@@ -74,34 +59,44 @@ const Dashboard = () => {
     totalCustomers: 0,
   });
 
+  const [value, setValue] = useState(0);
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const [subValue, setSubValue] = useState(0);
+  const handleChangeSubValue = (event, newValue) => {
+    setSubValue(newValue);
+  };
+
   const summaryData = [
     {
-      icon: <ShoppingBagIcon fontSize="large" />,
+      icon: FaBagShopping,
       count: summary.totalBookedOrders,
       label: "BOOKED ORDERS",
     },
     {
-      icon: <CurrencyRupeeIcon fontSize="large" />,
+      icon: HiShoppingCart,
       count: summary.totalEarning,
       label: "TOTAL EARNINGS",
     },
     {
-      icon: <LocalShippingIcon fontSize="large" />,
+      icon: FaTruck,
       count: summary.totalDelivered,
       label: "TOTAL DELIVERED",
     },
     {
-      icon: <CancelIcon fontSize="large" />,
+      icon: AiFillCloseCircle,
       count: summary.totalCancelled,
       label: "CANCELLED",
     },
     {
-      icon: <ErrorIcon fontSize="large" />,
+      icon: PiWarningCircleFill,
       count: summary.totalUndelivered,
       label: "UNDELIVERED",
     },
     {
-      icon: <PeopleIcon fontSize="large" />,
+      icon: PiUsersFill,
       count: summary.totalCustomers,
       label: "CUSTOMERS",
     },
@@ -117,7 +112,6 @@ const Dashboard = () => {
 
     orders.forEach((order) => {
       totalEarning += order.data.priceDetails.amountPayable;
-
       switch (order.data.status) {
         case "ORDER_PLACED":
           totalUndelivered++;
@@ -217,16 +211,24 @@ const Dashboard = () => {
     setNewOrdersCount(0);
   };
 
-  if (loading) {
-    return <CenteredCircularProgress />;
-  }
+  const tabs = [
+    { code: "today", label: "Today" },
+    { code: "week", label: "This Week" },
+    { code: "month", label: "This Month" },
+  ];
 
-  if (error) {
-    return <Typography color="error">{error}</Typography>;
-  }
+  useEffect(() => {
+    if (value == 0) {
+      fetchOrdersBetween("Today");
+    } else if (value == 1) {
+      fetchOrdersBetween("This Week");
+    } else if (value == 2) {
+      fetchOrdersBetween("This Month");
+    }
+  }, [value]);
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Stack gap={2}>
       <Snackbar
         open={newOrdersCount > 0}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
@@ -247,46 +249,91 @@ const Dashboard = () => {
           {REFRESH_OFFER}
         </Alert>
       </Snackbar>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-        <Box>
-          <Button
-            variant={timePeriod === "Today" ? "contained" : "text"}
-            onClick={() => fetchOrdersBetween("Today")}
-          >
-            Today
-          </Button>
-          <Button
-            variant={timePeriod === "This Week" ? "contained" : "text"}
-            onClick={() => fetchOrdersBetween("This Week")}
-          >
-            This Week
-          </Button>
-          <Button
-            variant={timePeriod === "This Month" ? "contained" : "text"}
-            onClick={() => fetchOrdersBetween("This Month")}
-          >
-            This Month
-          </Button>
-        </Box>
-        <IconButton>
-          <FilterListIcon />
-        </IconButton>
-      </Box>
 
-      <GridContainer>
+      <CustomTabs tabs={tabs} value={value} handleChange={handleChange} />
+
+      <Grid container spacing={2}>
         {summaryData.map((item, index) => (
-          <GridItem key={index}>
+          <Grid item xs={6} sm={4} md={3} lg={2} key={index}>
             <DashboardCard {...item} />
-          </GridItem>
+          </Grid>
         ))}
-      </GridContainer>
+      </Grid>
 
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Upcoming Orders
-      </Typography>
+      <CustomTabs
+        tabs={[{ label: "Upcoming Orders" }]}
+        value={subValue}
+        handleChange={handleChangeSubValue}
+      />
 
-      <OrdersTable orders={orders} />
-    </Box>
+      <OrdersListMobile orders={orders} />
+
+      <TableContainer sx={{ display: { xs: "none", md: "block" } }}>
+        <Table>
+          <TableHead>
+            <TableCell>Order Details</TableCell>
+            <TableCell>Customer Details</TableCell>
+            <TableCell>Booking Details</TableCell>
+            <TableCell>Booking Platform</TableCell>
+          </TableHead>
+
+          <TableBody>
+            {orders?.map((order) => (
+              <TableRow
+                onClick={() => navigate(`/order/${order.order_id}`)}
+                key={order.order_id}
+              >
+                <TableCell>
+                  <Stack direction="row" gap={2}>
+                    <TableItem
+                      color={AppColors.THEME_COLOR}
+                      label="order id"
+                      value={order.order_id}
+                    />
+                    <TableItem
+                      label="amount"
+                      value={order.data?.priceDetails?.totalAmount}
+                    />
+                  </Stack>
+                </TableCell>
+
+                <TableCell>
+                  <Stack direction="row" gap={2}>
+                    <TableItem
+                      label="customer name"
+                      value={order.data?.customerDetails?.customerName}
+                    />
+                    <TableItem
+                      label="seat"
+                      value={`${order.data?.deliveryDetails?.coach}/${order.data?.deliveryDetails?.berth}`}
+                    />
+                    <TableItem
+                      label="train number"
+                      value={`${order.data?.deliveryDetails?.trainNo} - ${order.data?.deliveryDetails?.trainName}`}
+                    />
+                    <TableItem
+                      label="station code"
+                      value={`${order.data?.deliveryDetails?.station} - ${order.station_code}`}
+                    />
+                  </Stack>
+                </TableCell>
+
+                <TableCell>
+                  <TableItem
+                    label="Booking Date & Time"
+                    value={order.data?.bookingDate}
+                  />
+                </TableCell>
+
+                <TableCell>
+                  <TableItem label="Booking platform" value="Spicy Wagon" />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Stack>
   );
 };
 

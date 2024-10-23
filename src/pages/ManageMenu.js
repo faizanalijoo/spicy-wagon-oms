@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import {
-  Typography,
-  Box,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -10,54 +7,31 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Chip,
-  IconButton,
   InputAdornment,
+  Stack,
+  Typography,
+  IconButton,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import SearchIcon from "@mui/icons-material/Search";
-import ImageIcon from "@mui/icons-material/Image";
+import CustomTabs from "../components/CustomTabs";
+import { AppColors } from "../utils/AppColors";
+import { IoSearchOutline } from "react-icons/io5";
+import IconContainer from "../components/IconContainer";
+import { TbUpload } from "react-icons/tb";
+import VegTag from "../components/VegTag";
+import { PiDotsThreeOutlineFill } from "react-icons/pi";
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  margin: theme.spacing(3),
-  width: "100%",
-  boxSizing: "border-box",
-}));
-
-const StyledTableContainer = styled(TableContainer)({
-  maxHeight: 440,
-});
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  backgroundColor: theme.palette.common.black,
-  color: theme.palette.common.white,
-  padding: "12px 16px",
-}));
-
-const ImagePlaceholder = styled(Box)({
-  width: 40,
-  height: 40,
-  backgroundColor: "#ffcccb",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  borderRadius: "4px",
-});
-
-const StatusChip = styled(Chip)(({ theme, status }) => ({
-  backgroundColor:
-    status === "ACTIVE"
-      ? theme.palette.success.light
-      : theme.palette.error.light,
-  color:
-    status === "ACTIVE" ? theme.palette.success.dark : theme.palette.error.dark,
-}));
+const StatusChip = ({ status }) => (
+  <Typography
+    variant="subtitle1"
+    fontSize={12}
+    color={status === "ACTIVE" ? AppColors.TEXT_GREEN : AppColors.TEXT_RED}
+  >
+    {status}
+  </Typography>
+);
 
 const ManageMenu = () => {
   const [searchTerm, setSearchTerm] = useState("");
-
-  // Mock data for the table
   const menuItems = [
     {
       id: 3832,
@@ -71,7 +45,9 @@ const ManageMenu = () => {
       openingTime: "07:00:00",
       closingTime: "23:00:00",
       type: "NON VEG",
-      featured: "N",
+      featured: false,
+      cuisine: "North Indian",
+      foodType: "Mains Gravy Indian",
     },
     // Add more mock data here...
   ];
@@ -81,67 +57,67 @@ const ManageMenu = () => {
   };
 
   return (
-    <StyledPaper>
-      <Box
-        display="flex"
+    <Stack gap={2}>
+      <Stack
+        gap={2}
+        direction={{ xs: "column", md: "row" }}
+        alignItems="flex-start"
         justifyContent="space-between"
-        alignItems="center"
-        mb={3}
       >
-        <Typography variant="h5">Manage Menu</Typography>
+        <CustomTabs tabs={[{ label: "Manage Menu" }]} value={0} />
         <TextField
-          variant="outlined"
           size="small"
-          placeholder="Search Here"
-          value={searchTerm}
-          onChange={handleSearch}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon />
+                <IoSearchOutline size={18} color="#777678" />
               </InputAdornment>
             ),
           }}
+          placeholder="Search here"
+          sx={{ bgcolor: AppColors.WHITE, width: 400 }}
+          value={searchTerm}
+          onChange={handleSearch}
         />
-      </Box>
+      </Stack>
 
-      <StyledTableContainer component={Paper}>
-        <Table stickyHeader aria-label="sticky table">
+      <TableContainer sx={{ overflowX: "auto" }}>
+        <Table>
           <TableHead>
             <TableRow>
-              <StyledTableCell>ID</StyledTableCell>
-              <StyledTableCell>Image</StyledTableCell>
-              <StyledTableCell>Item Name</StyledTableCell>
-              <StyledTableCell>Description</StyledTableCell>
-              <StyledTableCell>Status</StyledTableCell>
-              <StyledTableCell>Base Price</StyledTableCell>
-              <StyledTableCell>Tax</StyledTableCell>
-              <StyledTableCell>Selling Price</StyledTableCell>
-              <StyledTableCell>Opening Time</StyledTableCell>
-              <StyledTableCell>Closing Time</StyledTableCell>
-              <StyledTableCell>Type</StyledTableCell>
-              <StyledTableCell>Featured</StyledTableCell>
+              <TableCell>ID</TableCell>
+              <TableCell>Image</TableCell>
+              <TableCell>Item Name</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Base</TableCell>
+              <TableCell>Tax</TableCell>
+              <TableCell>Selling Price</TableCell>
+              <TableCell>Opening Time</TableCell>
+              <TableCell>Closing Time</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell>Featured</TableCell>
+              <TableCell>Cuisine</TableCell>
+              <TableCell>Food Type</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {menuItems.map((item) => (
-              <TableRow key={item.id}>
+            {menuItems?.map((item) => (
+              <TableRow
+                key={item.id}
+                sx={{
+                  "& .MuiTableCell-root": { fontSize: 12, color: "#3E3E3E" },
+                }}
+              >
                 <TableCell>{item.id}</TableCell>
                 <TableCell>
-                  <ImagePlaceholder>
-                    <IconButton size="small">
-                      <ImageIcon fontSize="small" />
-                    </IconButton>
-                  </ImagePlaceholder>
+                  <IconContainer size={28} icon={<TbUpload size={14} />} />
                 </TableCell>
                 <TableCell>{item.itemName}</TableCell>
                 <TableCell>{item.description}</TableCell>
                 <TableCell>
-                  <StatusChip
-                    label={item.status}
-                    status={item.status}
-                    size="small"
-                  />
+                  <StatusChip status={item.status} />
                 </TableCell>
                 <TableCell>{item.basePrice.toFixed(2)}</TableCell>
                 <TableCell>{item.tax.toFixed(2)}</TableCell>
@@ -149,15 +125,35 @@ const ManageMenu = () => {
                 <TableCell>{item.openingTime}</TableCell>
                 <TableCell>{item.closingTime}</TableCell>
                 <TableCell>
-                  <Chip label={item.type} color="secondary" size="small" />
+                  <VegTag nonVeg />
                 </TableCell>
-                <TableCell>{item.featured}</TableCell>
+                <TableCell>
+                  <Typography
+                    variant="subtitle1"
+                    fontSize={12}
+                    color={
+                      item?.featured ? AppColors.TEXT_GREEN : AppColors.TEXT_RED
+                    }
+                  >
+                    {item.featured ? "YES" : "NO"}
+                  </Typography>
+                </TableCell>
+                <TableCell>{item.cuisine}</TableCell>
+                <TableCell>{item.foodType}</TableCell>
+                <TableCell>
+                  <IconButton size="small">
+                    <PiDotsThreeOutlineFill
+                      color={AppColors.THEME_COLOR}
+                      size={18}
+                    />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </StyledTableContainer>
-    </StyledPaper>
+      </TableContainer>
+    </Stack>
   );
 };
 

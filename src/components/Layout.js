@@ -1,35 +1,67 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { Box } from "@mui/material";
-import styled from "styled-components";
+import { Stack } from "@mui/material";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-
-const LayoutContainer = styled(Box)`
-  display: flex;
-  width: 100%;
-  // background-image: linear-gradient(to bottom right, #791717, #2a0101);
-`;
-
-const MainContent = styled(Box)`
-  flex-grow: 1;
-  padding: 20px;
-  margin-top: 64px; // Height of the AppBar
-  margin-left: 240px; // Width of the Sidebar
-  @media (max-width: 600px) {
-    margin-left: 0;
-  }
-`;
+import { AppColors } from "../utils/AppColors";
+import { HEADER_HEIGHT, SIDEBAR_WIDTH } from "../utils/constants";
+import MobileHeader from "./MobileNav/MobileHeader";
 
 const Layout = () => {
   return (
-    <LayoutContainer>
-      <Header />
-      <Sidebar />
-      <MainContent component="main">
-        <Outlet />
-      </MainContent>
-    </LayoutContainer>
+    <Stack sx={{ background: AppColors.GRADIENT_TOP_BOTTOM }}>
+      <Stack
+        position="fixed"
+        top={0}
+        width="100%"
+        height={HEADER_HEIGHT}
+        zIndex={1}
+        display={{ xs: "none", md: "flex" }}
+      >
+        <Header />
+      </Stack>
+
+      <Stack
+        position="fixed"
+        top={0}
+        width="100%"
+        height={HEADER_HEIGHT}
+        zIndex={1}
+        display={{ xs: "flex", md: "none" }}
+      >
+        <MobileHeader />
+      </Stack>
+
+      <Stack
+        width={SIDEBAR_WIDTH}
+        position="fixed"
+        left={0}
+        top={0}
+        height="100vh"
+        zIndex={2}
+        display={{ xs: "none", md: "flex" }}
+      >
+        <Sidebar />
+      </Stack>
+
+      <Stack
+        mt={`${HEADER_HEIGHT}px`}
+        ml={{ md: `${SIDEBAR_WIDTH}px`, xs: 0 }}
+        component="main"
+        p={{ xs: 0, md: 2 }}
+        minHeight={`calc(100vh - ${HEADER_HEIGHT}px)`}
+      >
+        <Stack
+          borderRadius={{ xs: 0, md: "16px" }}
+          bgcolor="#F9F5F4"
+          height="calc(100vh - 96px)"
+          overflow="auto"
+          p={{ xs: 2, md: 3 }}
+        >
+          <Outlet />
+        </Stack>
+      </Stack>
+    </Stack>
   );
 };
 

@@ -1,78 +1,39 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { 
-  Typography, 
-  Paper, 
-  Box, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow 
-} from '@mui/material';
-import Grid from '@mui/material/Grid';
-import { styled } from '@mui/material/styles';
-import DescriptionIcon from '@mui/icons-material/Description';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import InfoIcon from '@mui/icons-material/Info';
-import GroupIcon from '@mui/icons-material/Group';
+import React, { useCallback, useState, useEffect } from "react";
+import {
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Stack,
+  Divider,
+} from "@mui/material";
+import Grid from "@mui/material/Grid";
+import DescriptionIcon from "@mui/icons-material/Description";
+import InfoIcon from "@mui/icons-material/Info";
 import api from "../services/api";
 import { apiEndpoints } from "../services/apiEndpoints";
 import { useAuth } from "../contexts/AuthContext";
-import CenteredCircularProgress from '../components/CenteredCircularProgress';
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  margin: theme.spacing(3),
-}));
-
-const SectionTitle = styled(Typography)(({ theme }) => ({
-  fontSize: '1.1rem',
-  fontWeight: 'bold',
-  marginBottom: theme.spacing(2),
-  display: 'flex',
-  alignItems: 'center',
-  '& .MuiSvgIcon-root': {
-    marginRight: theme.spacing(1),
-    color: theme.palette.primary.main,
-  },
-}));
-
-const Label = styled(Typography)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  fontSize: '0.875rem',
-}));
-
-const Value = styled(Typography)({
-  fontWeight: 500,
-});
-
-const InfoItemDiv = styled('div')(({ theme }) => ({
-  marginBottom: theme.spacing(2),
-}));
-
-const InfoItem = ({ label, value }) => (
-  <InfoItemDiv>
-  <Label variant="subtitle2">{label}</Label>
-  <Value>{value}</Value>
-</InfoItemDiv>
-);
+import CenteredCircularProgress from "../components/CenteredCircularProgress";
+import CustomTabs from "../components/CustomTabs";
+import CustomCard from "../components/CustomCard";
+import CardTitle from "../components/CardTitle";
+import TableItem from "../components/TableItem";
+import { FaTruck } from "react-icons/fa";
+import { TbLocationFilled } from "react-icons/tb";
 
 const OutletDetails = () => {
   const [loading, setLoading] = useState(true);
-  const [outletData, setOutletData] = useState({})
+  const [outletData, setOutletData] = useState({});
   const [error, setError] = useState(null);
-
   const { vendorId } = useAuth();
 
   const fetchOutletDetail = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get(
-        apiEndpoints.getOutletDetails(
-          vendorId
-        )
-      );
+      const response = await api.get(apiEndpoints.getOutletDetails(vendorId));
 
       setOutletData(response.data);
       setLoading(false);
@@ -94,101 +55,213 @@ const OutletDetails = () => {
     return <Typography color="error">{error}</Typography>;
   }
 
-  console.log('outletdata', outletData)
-
   return (
-    <StyledPaper>
-      <Typography variant="h5" gutterBottom>Outlet Details</Typography>
+    <Stack gap={2}>
+      <CustomTabs tabs={[{ label: "Outlet Details" }]} value={0} />
 
-     
-      <Box mb={4}>
-        <SectionTitle>
-          <DescriptionIcon />
-          Basic Information
-        </SectionTitle>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={3}>
-            <InfoItem label="OUTLET NAME" value={outletData.name} />
-            <InfoItem label="COMPANY NAME" value={outletData.companyName} />
-            <InfoItem label="FSAI NUMBER" value={outletData.fssaiNo} />
-            <InfoItem label="MINIMUM ORDER AMOUNT" value={outletData.minOrderAmount} />
+      <CustomCard sx={{ p: 2, gap: 2 }}>
+        <CardTitle title="Basic Information" icon={<DescriptionIcon />} />
+        <Divider />
+        <Grid container spacing={2}>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="OUTLET NAME"
+              value={outletData.name}
+            />
           </Grid>
-          <Grid item xs={12} sm={3}>
-            <InfoItem label="OUTLET ID" value={outletData.outlet_id} />
-            <InfoItem label="DELIVERED BY" value={outletData.delivered_by} />
-            <InfoItem label="FSAI VALID UPTO" value={outletData.fssaiValidUpto} />
-            <InfoItem label="STATUS" value={outletData.status} />
+
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="OUTLET ID"
+              value={outletData.outlet_id}
+            />
           </Grid>
-          <Grid item xs={12} sm={3}>
-            <InfoItem label="ID" value={outletData.id} />
-            <InfoItem label="DELIVERY COST" value={outletData.deliveryCost} />
-            <InfoItem label="GST NUMBER" value={outletData.gstNo} />
+
+          <Grid item xs={6} md={4}>
+            <TableItem size="large" label="ID" value={outletData.id} />
           </Grid>
-          <img
-            src={`${outletData.logoImage}`}
-            alt={outletData.name}
-            loading="lazy"
-            style={{ height: '200px', width: '200px', margin: '30px'}}
-          />
+
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="COMPANY NAME"
+              value={outletData.companyName}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="DELIVERED BY"
+              value={outletData.delivered_by}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="DELIVERY COST"
+              value={outletData.deliveryCost}
+            />
+          </Grid>
+
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="FSAI NUMBER"
+              value={outletData.fssaiNo}
+            />
+          </Grid>
+
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="FSAI VALID UPTO"
+              value={outletData.fssaiValidUpto}
+            />
+          </Grid>
+
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="GST NUMBER"
+              value={outletData.gstNo}
+            />
+          </Grid>
+
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="MINIMUM ORDER AMOUNT"
+              value={outletData.minOrderAmount}
+            />
+          </Grid>
+
+          <Grid item xs={6} md={4}>
+            <TableItem size="large" label="STATUS" value={outletData.status} />
+          </Grid>
         </Grid>
-      </Box>
 
-      <Box mb={4}>
-        <SectionTitle>
-          <LocationOnIcon />
-          Location & Contact Details
-        </SectionTitle>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
-            <InfoItem label="ADDRESS" value={outletData.address} />
-            <InfoItem label="EMAIL" value={outletData.email} />
-            <InfoItem label="LATITUDE" value={outletData.latitude} />
+        <CardTitle
+          icon={<TbLocationFilled />}
+          title="Location & Contact Details"
+        />
+        <Divider />
+        <Grid container spacing={2}>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="ADDRESS"
+              value={outletData.address}
+            />
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <InfoItem label="CITY" value={outletData.city} />
-            <InfoItem label="MOBILE NUMBER" value={outletData.mobile} />
-            <InfoItem label="LONGITUDE" value={outletData.longitude} />
+
+          <Grid item xs={6} md={4}>
+            <TableItem size="large" label="CITY" value={outletData.city} />
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <InfoItem label="STATION CODE" value={outletData.station_code} />
-            <InfoItem label="STATE" value={outletData.state} />
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="STATION CODE"
+              value={outletData.station_code}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem size="large" label="EMAIL" value={outletData.email} />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="MOBILE NUMBER"
+              value={outletData.mobile}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem size="large" label="STATE" value={outletData.state} />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="LATITUDE"
+              value={outletData.latitude}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="LONGITUDE"
+              value={outletData.longitude}
+            />
           </Grid>
         </Grid>
-      </Box>
 
-      <Box mb={4}>
-        <SectionTitle>
-          <InfoIcon />
-          Additional Details
-        </SectionTitle>
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={4}>
-            <InfoItem label="ORDER TIMING" value={outletData.order_timing} />
-            <InfoItem label="DETAILS" value={outletData.details} />
-            <InfoItem label="NUMBER OF RATINGS" value={outletData.n_ratings} />
+        <CardTitle icon={<InfoIcon />} title="Additional Details" />
+        <Divider />
+        <Grid container spacing={2}>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="ORDER TIMING"
+              value={outletData.order_timing}
+            />
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <InfoItem label="OPENING TIME" value={outletData.openingTime} />
-            <InfoItem label="PREPAID" value={outletData.prepaid ? 'Yes' : 'No'} />
-            <InfoItem label="AVERAGE RATINGS" value={outletData.average_rating} />
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="OPENING TIME"
+              value={outletData.openingTime}
+            />
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <InfoItem label="CLOSING TIME" value={outletData.closingTime} />
-            <InfoItem label="FEATURED" value={outletData.featured ? 'Yes' : 'No'} />
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="CLOSING TIME"
+              value={outletData.closingTime}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="DETAILS"
+              value={outletData.details}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="PREPAID"
+              value={outletData.prepaid ? "Yes" : "No"}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="FEATURED"
+              value={outletData.featured ? "Yes" : "No"}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="NUMBER OF RATINGS"
+              value={outletData.n_ratings}
+            />
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <TableItem
+              size="large"
+              label="AVERAGE RATINGS"
+              value={outletData.average_rating}
+            />
           </Grid>
         </Grid>
-      </Box>
 
-      <Box>
-        <SectionTitle>
-          <GroupIcon />
-          Vendors Associated
-        </SectionTitle>
-        <TableContainer component={Paper}>
+        <CardTitle icon={<FaTruck />} title=" Vendors Associated" />
+        <Divider />
+        <TableContainer sx={{ width: { xs: "100%", md: "50%" } }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Id</TableCell>
                 <TableCell>User</TableCell>
                 <TableCell>Status</TableCell>
               </TableRow>
@@ -196,16 +269,17 @@ const OutletDetails = () => {
             <TableBody>
               {outletData?.vendors?.map((vendor, index) => (
                 <TableRow key={index}>
-                  <TableCell>{vendor.id}</TableCell>
                   <TableCell>{vendor.user}</TableCell>
-                  <TableCell>{vendor.is_active ? 'Active' : 'Not Active'}</TableCell>
+                  <TableCell>
+                    {vendor.is_active ? "Active" : "Not Active"}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
-      </Box>
-    </StyledPaper>
+      </CustomCard>
+    </Stack>
   );
 };
 
