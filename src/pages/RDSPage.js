@@ -1,44 +1,30 @@
 import React, { useState } from "react";
 import {
-  Typography,
-  Box,
-  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Button,
-  InputAdornment,
+  Stack,
+  Divider,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import SearchIcon from "@mui/icons-material/Search";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(3),
-  margin: theme.spacing(3),
-  width: "100%",
-  boxSizing: "border-box",
-}));
-
-const StyledTableContainer = styled(TableContainer)({
-  maxHeight: 440,
-});
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  backgroundColor: theme.palette.common.black,
-  color: theme.palette.common.white,
-}));
+import CustomTabs from "../components/CustomTabs";
+import SearchField from "../components/SearchField";
+import CustomCard from "../components/CustomCard";
+import CardTitle from "../components/CardTitle";
+import {
+  MdAdd,
+  MdOutlineFileDownload,
+  MdOutlineFileUpload,
+  MdRefresh,
+} from "react-icons/md";
+import TableItem from "../components/TableItem";
 
 const VendorsRollingDepositScheme = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Mock data for the table
   const depositData = [
     {
       date: "08-07-2024",
@@ -81,125 +67,130 @@ const VendorsRollingDepositScheme = () => {
   };
 
   return (
-    <StyledPaper>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-      >
-        <Typography variant="h5">Vendors Rolling Deposit Scheme</Typography>
-        <Box>
-          <TextField
-            variant="outlined"
-            size="small"
-            placeholder="Search Here"
-            value={searchTerm}
+    <Stack gap={2}>
+      <Stack direction="row" justifyContent="space-between">
+        <CustomTabs
+          tabs={[{ label: "Vendors Rolling Deposit Scheme" }]}
+          value={0}
+        />
+
+        <Stack direction="row" alignItems="center" gap={2}>
+          <SearchField
+            width={300}
+            search={searchTerm}
             onChange={handleSearch}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
           />
           <Button
             variant="contained"
-            color="primary"
-            startIcon={<RefreshIcon />}
+            color="success"
+            endIcon={<MdAdd />}
             onClick={handleAddDeposit}
-            sx={{ ml: 2 }}
           >
             Add Deposit
           </Button>
-        </Box>
-      </Box>
+        </Stack>
+      </Stack>
 
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
-        <Typography variant="h6" display="flex" alignItems="center">
-          <RefreshIcon sx={{ mr: 1 }} />
-          RDS for Rangoli Wagon
-        </Typography>
-        <Box>
-          <Button
-            variant="outlined"
-            startIcon={<FileUploadIcon />}
-            onClick={handleUploadTransactions}
-            sx={{ mr: 2 }}
-          >
-            Upload Transactions
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<FileDownloadIcon />}
-            onClick={handleDownloadReport}
-          >
-            Download Report
-          </Button>
-        </Box>
-      </Box>
+      <CustomCard sx={{ p: 2, gap: 2 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <CardTitle icon={<MdRefresh />} title="RDS for Rangoli Wagon" />
+          <Stack direction="row" alignItems="center" gap={2}>
+            <Button
+              endIcon={<MdOutlineFileUpload />}
+              size="small"
+              color="info"
+              variant="outlined"
+              onClick={handleUploadTransactions}
+            >
+              Upload Transactions
+            </Button>
+            <Button
+              endIcon={<MdOutlineFileDownload />}
+              size="small"
+              color="info"
+              variant="outlined"
+              onClick={handleDownloadReport}
+            >
+              Download Report
+            </Button>
+          </Stack>
+        </Stack>
+        <Divider />
 
-      <StyledTableContainer component={Paper}>
-        <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Date & Time</StyledTableCell>
-              <StyledTableCell>Order Details</StyledTableCell>
-              <StyledTableCell>Outlet & Vendor</StyledTableCell>
-              <StyledTableCell>Base Amount</StyledTableCell>
-              <StyledTableCell>Margin Amount</StyledTableCell>
-              <StyledTableCell>Opening Balance</StyledTableCell>
-              <StyledTableCell>Amount</StyledTableCell>
-              <StyledTableCell>Closing Amount</StyledTableCell>
-              <StyledTableCell>Remarks</StyledTableCell>
-              <StyledTableCell>Updated By</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {depositData.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  <Typography variant="body2">{row.date}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {row.time}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">
-                    Order ID: {row.orderId}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Transaction ID: {row.transactionId}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">Vendor: {row.vendor}</Typography>
-                  <Typography variant="body2">
-                    Outlet ID: {row.outletId}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Outlet: {row.outlet}
-                  </Typography>
-                </TableCell>
-                <TableCell>{row.baseAmount}</TableCell>
-                <TableCell>{row.marginAmount}</TableCell>
-                <TableCell>{row.openingBalance}</TableCell>
-                <TableCell>{row.amount}</TableCell>
-                <TableCell>{row.closingAmount}</TableCell>
-                <TableCell>{row.remarks}</TableCell>
-                <TableCell>{row.updatedBy}</TableCell>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell width={130}>Date & Time</TableCell>
+                <TableCell>Order Details</TableCell>
+                <TableCell width={200}>Outlet & Vendor</TableCell>
+                <TableCell>Base Amount</TableCell>
+                <TableCell>Margin Amount</TableCell>
+                <TableCell>Opening Balance</TableCell>
+                <TableCell>Amount</TableCell>
+                <TableCell>Closing Amount</TableCell>
+                <TableCell>Remarks</TableCell>
+                <TableCell>Updated By</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </StyledTableContainer>
-    </StyledPaper>
+            </TableHead>
+            <TableBody>
+              {depositData.map((row, index) => (
+                <TableRow sx={{ bgcolor: "#FAFAFA" }} key={index}>
+                  <TableCell>
+                    <Stack gap={1}>
+                      <TableItem label="date" value={row?.date} />
+                      <Divider />
+                      <TableItem label="time" value={row?.time} />
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    <Stack gap={1}>
+                      <Stack direction="row" gap={2}>
+                        <TableItem label="order id" value={row?.orderId} />
+                        <TableItem
+                          label="transaction id"
+                          value={row?.transactionId}
+                        />
+                      </Stack>
+                      <Divider />
+                      <Stack direction="row" gap={2}>
+                        <TableItem label="amount" />
+                        <TableItem label="payment" />
+                      </Stack>
+                    </Stack>
+                  </TableCell>
+
+                  <TableCell>
+                    <Stack gap={1}>
+                      <Stack direction="row" gap={2}>
+                        <TableItem label="vendor" value={row?.vendor} />
+                        <TableItem label="outlet id" value={row?.outletId} />
+                      </Stack>
+                      <Divider />
+                      <Stack direction="row" gap={2}>
+                        <TableItem label="outlet" value={row.outlet} />
+                      </Stack>
+                    </Stack>
+                  </TableCell>
+
+                  <TableCell>{row.baseAmount}</TableCell>
+                  <TableCell>{row.marginAmount}</TableCell>
+                  <TableCell>{row.openingBalance}</TableCell>
+                  <TableCell>{row.amount}</TableCell>
+                  <TableCell>{row.closingAmount}</TableCell>
+                  <TableCell>{row.remarks}</TableCell>
+                  <TableCell>{row.updatedBy}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CustomCard>
+    </Stack>
   );
 };
 

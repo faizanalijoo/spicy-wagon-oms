@@ -6,19 +6,17 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
-  InputAdornment,
   Stack,
   Typography,
   IconButton,
 } from "@mui/material";
 import CustomTabs from "../components/CustomTabs";
 import { AppColors } from "../utils/AppColors";
-import { IoSearchOutline } from "react-icons/io5";
 import IconContainer from "../components/IconContainer";
 import { TbUpload } from "react-icons/tb";
 import VegTag from "../components/VegTag";
 import { PiDotsThreeOutlineFill } from "react-icons/pi";
+import SearchField from "../components/SearchField";
 
 const StatusChip = ({ status }) => (
   <Typography
@@ -65,20 +63,7 @@ const ManageMenu = () => {
         justifyContent="space-between"
       >
         <CustomTabs tabs={[{ label: "Manage Menu" }]} value={0} />
-        <TextField
-          size="small"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <IoSearchOutline size={18} color="#777678" />
-              </InputAdornment>
-            ),
-          }}
-          placeholder="Search here"
-          sx={{ bgcolor: AppColors.WHITE, width: 400 }}
-          value={searchTerm}
-          onChange={handleSearch}
-        />
+        <SearchField search={searchTerm} onChange={handleSearch} />
       </Stack>
 
       <TableContainer sx={{ overflowX: "auto" }}>

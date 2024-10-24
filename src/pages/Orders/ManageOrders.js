@@ -30,7 +30,7 @@ const ManageOrders = () => {
       const response = await api.get(
         apiEndpoints.getOrdersDate(
           vendorId,
-          moment(new Date()).format("YYYY-MM-DD")
+          moment(new Date()).subtract(1, "d").format("YYYY-MM-DD")
         )
       );
       setOrders(response.data.results);

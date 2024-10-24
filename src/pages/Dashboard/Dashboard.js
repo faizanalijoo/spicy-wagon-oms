@@ -1,17 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Button,
-  Snackbar,
-  Alert,
-  Stack,
-  Grid,
-  TableContainer,
-  TableHead,
-  TableCell,
-  Table,
-  TableBody,
-  TableRow,
-} from "@mui/material";
+import { Button, Snackbar, Alert, Stack, Grid } from "@mui/material";
 import { Refresh as RefreshIcon } from "@mui/icons-material";
 import api from "../../services/api";
 import { apiEndpoints } from "../../services/apiEndpoints";
@@ -24,10 +12,8 @@ import { FaBagShopping, FaTruck } from "react-icons/fa6";
 import { HiShoppingCart } from "react-icons/hi";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { PiUsersFill, PiWarningCircleFill } from "react-icons/pi";
-import TableItem from "../../components/TableItem";
-import { AppColors } from "../../utils/AppColors";
-import { useNavigate } from "react-router-dom";
 import OrdersListMobile from "../Orders/Components/OrdersListMobile";
+import OrdersListDesktop from "../Orders/Components/OrdersListDesktop";
 
 const REFRESH_OFFER = "New orders available. Click to refresh.";
 
@@ -42,7 +28,6 @@ function getHighestId(orders) {
 }
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const [timePeriod, setTimePeriod] = useState("Today");
   const [orders, setOrders] = useState([]);
   const [count, setCount] = useState(0);
@@ -255,7 +240,7 @@ const Dashboard = () => {
       <Grid container spacing={2}>
         {summaryData.map((item, index) => (
           <Grid item xs={6} sm={4} md={3} lg={2} key={index}>
-            <DashboardCard {...item} />
+            <DashboardCard showRupee={index == 1} {...item} />
           </Grid>
         ))}
       </Grid>
@@ -267,72 +252,7 @@ const Dashboard = () => {
       />
 
       <OrdersListMobile orders={orders} />
-
-      <TableContainer sx={{ display: { xs: "none", md: "block" } }}>
-        <Table>
-          <TableHead>
-            <TableCell>Order Details</TableCell>
-            <TableCell>Customer Details</TableCell>
-            <TableCell>Booking Details</TableCell>
-            <TableCell>Booking Platform</TableCell>
-          </TableHead>
-
-          <TableBody>
-            {orders?.map((order) => (
-              <TableRow
-                onClick={() => navigate(`/order/${order.order_id}`)}
-                key={order.order_id}
-              >
-                <TableCell>
-                  <Stack direction="row" gap={2}>
-                    <TableItem
-                      color={AppColors.THEME_COLOR}
-                      label="order id"
-                      value={order.order_id}
-                    />
-                    <TableItem
-                      label="amount"
-                      value={order.data?.priceDetails?.totalAmount}
-                    />
-                  </Stack>
-                </TableCell>
-
-                <TableCell>
-                  <Stack direction="row" gap={2}>
-                    <TableItem
-                      label="customer name"
-                      value={order.data?.customerDetails?.customerName}
-                    />
-                    <TableItem
-                      label="seat"
-                      value={`${order.data?.deliveryDetails?.coach}/${order.data?.deliveryDetails?.berth}`}
-                    />
-                    <TableItem
-                      label="train number"
-                      value={`${order.data?.deliveryDetails?.trainNo} - ${order.data?.deliveryDetails?.trainName}`}
-                    />
-                    <TableItem
-                      label="station code"
-                      value={`${order.data?.deliveryDetails?.station} - ${order.station_code}`}
-                    />
-                  </Stack>
-                </TableCell>
-
-                <TableCell>
-                  <TableItem
-                    label="Booking Date & Time"
-                    value={order.data?.bookingDate}
-                  />
-                </TableCell>
-
-                <TableCell>
-                  <TableItem label="Booking platform" value="Spicy Wagon" />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <OrdersListDesktop orders={orders} isDashboard />
     </Stack>
   );
 };

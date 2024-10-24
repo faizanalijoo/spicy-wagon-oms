@@ -1,5 +1,5 @@
 "use client";
-import { createTheme } from "@mui/material";
+import { Box, createTheme, Stack } from "@mui/material";
 import { AppColors } from "./utils/AppColors";
 import { MdOutlineChevronRight } from "react-icons/md";
 import { IoIosArrowDown } from "react-icons/io";
@@ -16,6 +16,11 @@ export const theme = createTheme({
       main: "#E4002B",
       light: "#ffedee",
       dark: "#ffedee",
+    },
+    success: {
+      main: "#0dac38",
+      light: "#1bbf46",
+      dark: "#0a912e",
     },
     grey: {
       100: "#DEE1E6",
@@ -123,7 +128,7 @@ export const theme = createTheme({
     },
     MuiLink: {
       defaultProps: {
-        color: AppColors.WHITE,
+        color: AppColors.TEXT_PRIMARY,
         underline: "hover",
         fontSize: 14,
         fontWeight: 500,
@@ -305,6 +310,17 @@ export const theme = createTheme({
             },
           },
         },
+      },
+    },
+
+    MuiSelect: {
+      defaultProps: {
+        IconComponent: () => (
+          <Stack justifyContent="center" pr={2}>
+            <IoIosArrowDown size={16} color="#1C1B1F" />
+          </Stack>
+        ),
+        clearIcon: null,
       },
     },
 

@@ -7,13 +7,13 @@ import OutletDetails from "./pages/OutletDetails";
 import ManageMenu from "./pages/ManageMenu";
 import RDSPage from "./pages/RDSPage";
 import Settings from "./pages/Settings";
-import OrderDetails from "./pages/OrderDetails";
 import { useAuth } from "./contexts/AuthContext";
 import { theme } from "./theme";
 import "./index.css";
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import ManageOrders from "./pages/Orders/ManageOrders";
+import OrderDetails from "./pages/Orders/OrderDetails";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();

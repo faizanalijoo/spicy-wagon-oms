@@ -258,6 +258,7 @@ const OutletDetails = () => {
 
         <CardTitle icon={<FaTruck />} title=" Vendors Associated" />
         <Divider />
+
         <TableContainer sx={{ width: { xs: "100%", md: "50%" } }}>
           <Table>
             <TableHead>
@@ -268,7 +269,7 @@ const OutletDetails = () => {
             </TableHead>
             <TableBody>
               {outletData?.vendors?.map((vendor, index) => (
-                <TableRow key={index}>
+                <TableRow sx={{ bgcolor: "#FAFAFA" }} key={index}>
                   <TableCell>{vendor.user}</TableCell>
                   <TableCell>
                     {vendor.is_active ? "Active" : "Not Active"}
