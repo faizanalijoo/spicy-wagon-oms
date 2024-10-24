@@ -55,7 +55,7 @@ const Login = () => {
       alignItems="center"
       justifyContent="center"
     >
-      <Card sx={{ width: { xs: "90%", md: 512 }, p: 5, py: 7 }}>
+      <Card sx={{ width: { xs: "90%", md: 512 }, p: 5 }}>
         <Stack width="100%" alignItems="center" justifyContent="center" gap={3}>
           <Stack alignItems="center" justifyContent="center">
             <img

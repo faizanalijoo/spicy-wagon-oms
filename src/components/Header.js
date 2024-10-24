@@ -5,7 +5,7 @@ import { SIDEBAR_WIDTH } from "../utils/constants";
 import { AppColors } from "../utils/AppColors";
 import { IoIosArrowDown } from "react-icons/io";
 import CustomCard from "./CustomCard";
-import { MdClose, MdOutlineRestaurant } from "react-icons/md";
+import { MdOutlineRestaurant } from "react-icons/md";
 
 const Header = () => {
   const { vendors, setVendorId } = useAuth();
@@ -63,7 +63,7 @@ const Header = () => {
                 handleOutletChange(v.outlet.name, v.outlet.outlet_id)
               }
             >
-              <MdOutlineRestaurant size={16}  />
+              <MdOutlineRestaurant size={16} />
               {v.outlet.companyName}
             </MenuItem>
           ))}
