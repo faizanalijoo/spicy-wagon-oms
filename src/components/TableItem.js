@@ -1,10 +1,10 @@
-import { Stack, Typography } from "@mui/material";
+import { Link, Stack, Typography } from "@mui/material";
 import React from "react";
 
 export default function TableItem(props) {
-  const { label, value, color, size, Icon, iconColor } = props;
+  const { label, value, color, size, Icon, iconColor, sx, onClick } = props;
   return (
-    <Stack {...props}>
+    <Stack sx={{ ...sx }}>
       <Stack direction="row" alignItems="center" gap={0.5}>
         {Icon && (
           <Icon
@@ -30,21 +30,32 @@ export default function TableItem(props) {
           {label || "--"}
         </Typography>
       </Stack>
-      <Typography
-        sx={{
-          "& .MuiTypography-root": {
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          },
-        }}
-        variant="subtitle2"
-        fontSize={size == "large" ? 15 : 13}
-        fontWeight={500}
-        color={color || "#3E3E3E"}
-      >
-        {value || "--"}
-      </Typography>
+      {typeof onClick == "function" ? (
+        <Link
+          width="fit-content"
+          onClick={onClick}
+          color={color || "#3E3E3E"}
+          fontSize={size == "large" ? 15 : 13}
+        >
+          {value || "--"}
+        </Link>
+      ) : (
+        <Typography
+          sx={{
+            "& .MuiTypography-root": {
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            },
+          }}
+          variant="subtitle2"
+          fontSize={size == "large" ? 15 : 13}
+          fontWeight={500}
+          color={color || "#3E3E3E"}
+        >
+          {value || "--"}
+        </Typography>
+      )}
     </Stack>
   );
 }

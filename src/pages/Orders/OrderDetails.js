@@ -269,7 +269,7 @@ const OrderDetails = () => {
                 title="Order Items & Details"
               />
               <TableItem
-                alignItems="flex-end"
+                sx={{ alignItems: "flex-end" }}
                 color={AppColors.THEME_COLOR}
                 size="large"
                 Icon={MdOutlineAccountBalanceWallet}

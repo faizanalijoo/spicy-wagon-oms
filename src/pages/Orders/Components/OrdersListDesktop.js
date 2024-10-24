@@ -74,13 +74,11 @@ export default function OrdersListDesktop({ orders, isDashboard }) {
 
             <TableBody>
               {orders?.map((order) => (
-                <TableRow
-                  onClick={() => navigate(`/order/${order.order_id}`)}
-                  key={order.order_id}
-                >
+                <TableRow key={order.order_id}>
                   <TableCell>
                     <Stack direction="row" gap={2}>
                       <TableItem
+                        onClick={() => navigate(`/order/${order.order_id}`)}
                         Icon={LuMenuSquare}
                         color={AppColors.THEME_COLOR}
                         label="order id"
@@ -180,13 +178,11 @@ export default function OrdersListDesktop({ orders, isDashboard }) {
 
             <TableBody>
               {orders?.map((order) => (
-                <TableRow
-                  onClick={() => navigate(`/order/${order.order_id}`)}
-                  key={order.order_id}
-                >
+                <TableRow key={order.order_id}>
                   <TableCell>
                     <Stack gap={1}>
                       <TableItem
+                        onClick={() => navigate(`/order/${order.order_id}`)}
                         Icon={LuMenuSquare}
                         color={AppColors.THEME_COLOR}
                         label="order id"
