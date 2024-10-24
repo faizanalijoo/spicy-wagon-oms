@@ -82,7 +82,7 @@ export default function OrdersListDesktop({ orders, isDashboard }) {
                         Icon={LuMenuSquare}
                         color={AppColors.THEME_COLOR}
                         label="order id"
-                        value={order.order_id}
+                        value={`#${order.order_id}`}
                       />
                       <TableItem
                         Icon={MdOutlineShoppingCart}
@@ -186,7 +186,7 @@ export default function OrdersListDesktop({ orders, isDashboard }) {
                         Icon={LuMenuSquare}
                         color={AppColors.THEME_COLOR}
                         label="order id"
-                        value={order.order_id}
+                        value={`#${order.order_id}`}
                       />
 
                       <Divider />

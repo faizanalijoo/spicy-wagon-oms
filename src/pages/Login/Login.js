@@ -84,7 +84,7 @@ const Login = () => {
             <LabelledInput label="Password">
               <TextField
                 placeholder="Enter Password"
-                type={showPassword ? "password" : "text"}
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 InputProps={{

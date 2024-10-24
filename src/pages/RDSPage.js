@@ -68,7 +68,11 @@ const VendorsRollingDepositScheme = () => {
 
   return (
     <Stack gap={2}>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack
+        gap={2}
+        direction={{ xs: "column", md: "row" }}
+        justifyContent="space-between"
+      >
         <CustomTabs
           tabs={[{ label: "Vendors Rolling Deposit Scheme" }]}
           value={0}
@@ -93,8 +97,9 @@ const VendorsRollingDepositScheme = () => {
 
       <CustomCard sx={{ p: 2, gap: 2 }}>
         <Stack
-          direction="row"
-          alignItems="center"
+          gap={2}
+          direction={{ xs: "column", md: "row" }}
+          alignItems={{ xs: "flex-start", md: "center" }}
           justifyContent="space-between"
         >
           <CardTitle icon={<MdRefresh />} title="RDS for Rangoli Wagon" />

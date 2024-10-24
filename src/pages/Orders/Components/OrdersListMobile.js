@@ -28,7 +28,7 @@ export default function OrdersListMobile({ orders }) {
               <TableItem
                 color={AppColors.THEME_COLOR}
                 label="id"
-                value={order.order_id}
+                value={`#${order.order_id}`}
               />
             </Stack>
 
