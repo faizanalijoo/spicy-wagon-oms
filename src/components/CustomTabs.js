@@ -1,10 +1,16 @@
-import { Stack, Tab, Tabs } from "@mui/material";
+import { IconButton, Stack, Tab, Tabs } from "@mui/material";
 import React from "react";
 import { AppColors } from "../utils/AppColors";
+import { MdOutlineArrowBackIos } from "react-icons/md";
 
-export default function CustomTabs({ tabs, value, handleChange }) {
+export default function CustomTabs({ tabs, value, handleChange, onBackClick }) {
   return (
-    <Stack>
+    <Stack direction="row" alignItems="center" gap={1}>
+      {typeof onBackClick == "function" && (
+        <IconButton onClick={onBackClick} size="small">
+          <MdOutlineArrowBackIos size={18} color={AppColors.TEXT_PRIMARY} />
+        </IconButton>
+      )}
       <Tabs
         variant="scrollable"
         sx={{

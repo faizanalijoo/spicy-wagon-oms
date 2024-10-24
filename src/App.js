@@ -14,30 +14,22 @@ import Login from "./pages/Login/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import ManageOrders from "./pages/Orders/ManageOrders";
 import OrderDetails from "./pages/Orders/OrderDetails";
+import { Toaster } from "react-hot-toast";
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
-
-  if (loading) {
-    return <CircularProgress />;
-  }
-
+  const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
-
   return children;
 };
 
 function App() {
   const { loading } = useAuth();
-
-  if (loading) {
-    return <CircularProgress />;
-  }
-
+  if (loading) return;
   return (
     <ThemeProvider theme={theme}>
+      <Toaster />
       <Routes>
         <Route path="/login" element={<Login />} />
 

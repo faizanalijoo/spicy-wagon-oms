@@ -27,6 +27,7 @@ import { TiUserOutline } from "react-icons/ti";
 import { GoCheckCircleFill } from "react-icons/go";
 import { HiOutlineTruck } from "react-icons/hi";
 import { IoBagHandleOutline } from "react-icons/io5";
+import moment from "moment";
 
 export default function OrdersListDesktop({ orders, isDashboard }) {
   const navigate = useNavigate();
@@ -268,7 +269,7 @@ export default function OrdersListDesktop({ orders, isDashboard }) {
                       <TableItem
                         Icon={MdOutlineHistory}
                         label="Last Updated"
-                        value={order.updated_at}
+                        value={moment(order.updated_at).format("lll")}
                       />
                       <Divider />
 

@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Stack,
   Card,
+  IconButton,
 } from "@mui/material";
 import { useAuth } from "../../contexts/AuthContext";
 import api from "../../services/api";
@@ -14,17 +15,20 @@ import { apiEndpoints } from "../../services/apiEndpoints";
 import redLogo from "../../images/redLogo.png";
 import LabelledInput from "../../components/LabelledInput";
 import { AppColors } from "../../utils/AppColors";
+import { LuEye, LuEyeOff } from "react-icons/lu";
+import toast from "react-hot-toast";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setLoading(true);
     try {
       const response = await api.post(apiEndpoints.getToken, {
@@ -37,7 +41,7 @@ const Login = () => {
       await login(response.data.token);
       navigate("/");
     } catch (err) {
-      setError("Invalid credentials. Please try again.");
+      toast.error(err?.response?.data?.error);
     } finally {
       setLoading(false);
     }
@@ -80,9 +84,23 @@ const Login = () => {
             <LabelledInput label="Password">
               <TextField
                 placeholder="Enter Password"
-                type="password"
+                type={showPassword ? "password" : "text"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton
+                      size="small"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <LuEye size={18} color="#48494D" />
+                      ) : (
+                        <LuEyeOff size={18} color="#48494D" />
+                      )}
+                    </IconButton>
+                  ),
+                }}
               />
             </LabelledInput>
           </Stack>

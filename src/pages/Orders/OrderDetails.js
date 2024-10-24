@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Typography,
   Paper,
@@ -43,6 +43,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 const OrderDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { vendorId } = useAuth();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -100,7 +101,11 @@ const OrderDetails = () => {
         alignItems={{ xs: "flex-start", md: "center" }}
         justifyContent="space-between"
       >
-        <CustomTabs tabs={[{ label: "Order Details" }]} value={0} />
+        <CustomTabs
+          tabs={[{ label: "Order Details" }]}
+          value={0}
+          onBackClick={() => navigate(-1)}
+        />
 
         <Stack direction="row" alignItems="center" gap={2}>
           <Button
